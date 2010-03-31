@@ -153,7 +153,7 @@
   NSString* scriptText = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
 	
   if( scriptText == nil ) {
-    NSLog(@"An error occured while processing the JavaScript injection file");
+    NSLog(@"An error occured in RDLinkedInAuthorizationController while processing the JavaScript injection file");
   }
 	
 	[rdWebView stringByEvaluatingJavaScriptFromString:scriptText];
@@ -167,17 +167,17 @@
 }
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-  NSLog(@"should web view load request? %@", request);
+  //NSLog(@"should web view load request? %@", request);
   if( [[request.URL host] isEqualToString:@"www.linkedin.com"] ) {
     [[UIApplication sharedApplication] openURL:request.URL];
   }
-  else if( [[request.URL host] isEqualToString:@"siena_oauth"] ) {
+  else if( [[request.URL host] isEqualToString:@"linkedin_oauth"] ) {
     if( [[request.URL path] isEqualToString:@"/success"] ) {
       if( [self extractInfoFromHTTPRequest:request] ) {
         [rdEngine requestAccessToken];
       }
       else {
-        NSLog(@"did not find necessary information in the response!");
+        //NSLog(@"did not find necessary information in the response!");
       }
     }
     else if( [[request.URL path] isEqualToString:@"/deny"] ) {
