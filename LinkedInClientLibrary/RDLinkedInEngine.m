@@ -15,7 +15,7 @@ static NSString *const kOAuthRequestTokenURL = @"https://api.linkedin.com/uas/oa
 static NSString *const kOAuthAccessTokenURL  = @"https://api.linkedin.com/uas/oauth/accessToken";
 static NSString *const kOAuthAuthorizeURL    = @"https://api.linkedin.com/uas/oauth/authorize";
 
-static const unsigned char kRDLinkedInDebugLevel = 6;
+static const unsigned char kRDLinkedInDebugLevel = 0;
 
 NSString *const RDLinkedInEngineRequestTokenNotification = @"RDLinkedInEngineRequestTokenNotification";
 NSString *const RDLinkedInEngineAccessTokenNotification  = @"RDLinkedInEngineAccessTokenNotification";
@@ -169,7 +169,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 
 - (RDLinkedInConnectionID *)sendAPIRequestWithURL:(NSURL *)url HTTPMethod:(NSString *)method body:(NSData *)body {
   if( !self.isAuthorized ) return nil;
-  NSLog(@"sending API request to %@", url);
+  //NSLog(@"sending API request to %@", url);
   
 	// create and configure the URL request
   OAMutableURLRequest* request = [[[OAMutableURLRequest alloc] initWithURL:url
