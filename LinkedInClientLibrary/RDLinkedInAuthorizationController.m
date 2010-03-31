@@ -149,7 +149,7 @@
  */
 - (void)performInjection {
 	NSError*  error = nil;
-	NSString* path = [[NSBundle mainBundle] pathForResource:@"LinkedIn_JSInject" ofType:@"txt"];
+	NSString* path = [rdEngine pathForBundleResource:@"LinkedIn_JSInject" ofType:@"txt"];
   NSString* scriptText = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
 	
   if( scriptText == nil ) {

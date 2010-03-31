@@ -55,6 +55,8 @@ extern const NSUInteger kRDLinkedInMaxStatusLength;
 + (id)engineWithConsumerKey:(NSString *)consumerKey consumerSecret:(NSString *)consumerSecret delegate:(id<RDLinkedInEngineDelegate>)delegate;
 - (id)initWithConsumerKey:(NSString *)consumerKey consumerSecret:(NSString *)consumerSecret delegate:(id<RDLinkedInEngineDelegate>)delegate;
 
+- (NSString *)pathForBundleResource:(NSString *)name ofType:(NSString *)ext;
+
 - (NSUInteger)numberOfConnections;
 - (NSArray *)connectionIdentifiers;
 - (void)closeConnectionWithID:(RDLinkedInConnectionID *)identifier;

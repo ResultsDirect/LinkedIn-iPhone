@@ -61,6 +61,20 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 }
 
 
+#pragma mark misc public methods
+
+- (NSString *)pathForBundleResource:(NSString *)name ofType:(NSString *)ext {
+  static NSBundle* bundle = nil;
+  if( !bundle ) {
+    NSString* path = [[[NSBundle mainBundle] resourcePath]
+                      stringByAppendingPathComponent:@"LinkedIn.bundle"];
+    bundle = [[NSBundle bundleWithPath:path] retain];
+  }
+  
+  return [bundle pathForResource:name ofType:ext];
+}
+
+
 #pragma mark connection methods
 
 - (NSUInteger)numberOfConnections {
@@ -142,9 +156,6 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
   NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/id=%@", [memberID stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
   return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
 }
-
-
-#pragma mark profile methods
 
 - (RDLinkedInConnectionID *)updateStatus:(NSString *)newStatus {
   NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingString:@"/v1/people/~/current-status"]];

@@ -251,8 +251,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = LinkedInClientLibrary_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
-					"/usr/include/libxml2/**",
 					"$(SRCROOT)/../OAuthConsumeriPhoneLib",
+					"/usr/include/libxml2/**",
 				);
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
@@ -273,8 +273,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = LinkedInClientLibrary_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
-					"/usr/include/libxml2/**",
 					"$(SRCROOT)/../OAuthConsumeriPhoneLib",
+					"/usr/include/libxml2/**",
 				);
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
