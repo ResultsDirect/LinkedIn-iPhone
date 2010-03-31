@@ -1,5 +1,6 @@
 LinkedIn API and Authentication for iPhoneOS
 
+
 LinkedIn recently joined the growing number of social networking sites with public APIs. Since many
 of our clients are professional organizations, it seemed natural to take advantage of that venue in
 our applications, especially mobile ones. Since no one had build an Objective-C / iPhone client
@@ -17,6 +18,11 @@ the authentication portion, and to Matt Gemmell's MGTwitterEngine for some ideas
 structure the API portion. Thanks for all your hard work, and making it Open Source!
 	http://github.com/bengottlieb/Twitter-OAuth-iPhone
 	http://github.com/mattgemmell/MGTwitterEngine
+
+Included in this project is Ben Gottlieb's snapshot of Kaboomerang's OAuthConsumer library from
+Google Code, with his addition of an iPhone library project file, and the pin property on the
+OAToken class. The original code can be found here:
+	http://code.google.com/p/oauth/
 
 
 
