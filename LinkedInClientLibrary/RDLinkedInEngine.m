@@ -13,7 +13,7 @@
 static NSString *const kAPIBaseURL           = @"http://api.linkedin.com";
 static NSString *const kOAuthRequestTokenURL = @"https://api.linkedin.com/uas/oauth/requestToken";
 static NSString *const kOAuthAccessTokenURL  = @"https://api.linkedin.com/uas/oauth/accessToken";
-static NSString *const kOAuthAuthorizeURL    = @"https://api.linkedin.com/uas/oauth/authorize";
+static NSString *const kOAuthAuthorizeURL    = @"https://www.linkedin.com/uas/oauth/authorize";
 
 static const unsigned char kRDLinkedInDebugLevel = 0;
 

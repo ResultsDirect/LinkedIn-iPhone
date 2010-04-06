@@ -168,10 +168,8 @@
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
   //NSLog(@"should web view load request? %@", request);
-  if( [[request.URL host] isEqualToString:@"www.linkedin.com"] ) {
-    [[UIApplication sharedApplication] openURL:request.URL];
-  }
-  else if( [[request.URL host] isEqualToString:@"linkedin_oauth"] ) {
+  NSString* host = [[request.URL host] lowercaseString];
+  if( [@"linkedin_oauth" isEqualToString:host] ) {
     if( [[request.URL path] isEqualToString:@"/success"] ) {
       if( [self extractInfoFromHTTPRequest:request] ) {
         [rdEngine requestAccessToken];
@@ -184,6 +182,14 @@
       [self denied];
     }
     return NO;
+  }
+  else if( [@"api.linkedin.com" isEqualToString:host] ) {
+    return YES;
+  }
+  else if( [@"www.linkedin.com" isEqualToString:host] ) {
+    if( ![[request.URL path] hasPrefix:@"/uas/oauth"] ) {
+      [[UIApplication sharedApplication] openURL:request.URL];
+    }
   }
   return YES;
 }
