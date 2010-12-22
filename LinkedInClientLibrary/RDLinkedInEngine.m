@@ -193,7 +193,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
   xml = [[NSString alloc]
 		   initWithFormat:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n%@",xml];
 	
-  NSData *data = [xml dataUsingEncoding:NSASCIIStringEncoding];
+  NSData *data = [xml dataUsingEncoding:NSUTF8StringEncoding];
 	
   //NSLog(@"xml=%@", xml);
   //NSLog(@"data=%@", data);
