@@ -164,6 +164,42 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
   return [self sendAPIRequestWithURL:url HTTPMethod:@"PUT" body:body];
 }
 
+- (RDLinkedInConnectionID *)shareUrl:(NSString *)submittedUrl imageUrl:(NSString *)submittedImageUrl title:(NSString*)title comment:(NSString*)comment {
+  NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingString:@"/v1/people/~/shares"]];
+
+  comment = [comment length] > kRDLinkedInMaxStatusLength ? [comment substringToIndex:kRDLinkedInMaxStatusLength] : comment;
+
+  NSString *xml = [[NSString alloc] initWithFormat:@"			\
+				   <share>										\
+				   <comment>%@</comment>						\
+				   <content>									\
+				   <title>%@</title>							\
+				   <submitted-url>%@</submitted-url>			\
+				   <submitted-image-url>%@</submitted-image-url>\
+				   </content>									\
+				   <visibility>									\
+				   <code>anyone</code>							\
+				   </visibility>								\
+				   </share>",
+				   comment,
+				   title,
+				   submittedUrl,
+				   submittedImageUrl];
+	
+  // Cleaning the XML content
+  xml = [xml stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+  xml = [xml stringByReplacingOccurrencesOfString:@"	" withString:@""];
+	 
+  xml = [[NSString alloc]
+		   initWithFormat:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n%@",xml];
+	
+  NSData *data = [xml dataUsingEncoding:NSASCIIStringEncoding];
+	
+  //NSLog(@"xml=%@", xml);
+  //NSLog(@"data=%@", data);
+	
+  return [self sendAPIRequestWithURL:url HTTPMethod:@"POST" body:data];
+}
 
 #pragma mark private
 
