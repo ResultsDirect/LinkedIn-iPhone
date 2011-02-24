@@ -6,6 +6,8 @@
 //  Copyright 2008 Instinctive Code.
 //
 
+#import <Foundation/Foundation.h>
+
 @interface NSString (UUID)
 
 + (NSString*)stringWithNewUUID;
