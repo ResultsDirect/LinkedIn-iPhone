@@ -7,7 +7,6 @@
 //
 
 #import "RDLinkedInHTTPURLConnection.h"
-#import "NSString+UUID.h"
 
 
 @implementation RDLinkedInHTTPURLConnection
@@ -31,7 +30,7 @@
 
 - (RDLinkedInConnectionID *)identifier {
   if( !rdIdentifier ) {
-    rdIdentifier = [[NSString stringWithNewUUID] retain];
+    rdIdentifier = [[[NSProcessInfo processInfo] globallyUniqueString] retain];
   }
   return rdIdentifier;
 }
