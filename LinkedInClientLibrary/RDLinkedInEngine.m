@@ -157,13 +157,17 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
   return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
 }
 
+- (RDLinkedInConnectionID *)peopleSearch:(NSString *)query {
+  NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people-search?%@",[query stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+  return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
+}	
+
 - (RDLinkedInConnectionID *)updateStatus:(NSString *)newStatus {
   NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingString:@"/v1/people/~/current-status"]];
   newStatus = [newStatus length] > kRDLinkedInMaxStatusLength ? [newStatus substringToIndex:kRDLinkedInMaxStatusLength] : newStatus;
   NSData* body = [RDLinkedInRequestBuilder buildSimpleRequestWithRootNode:@"current-status" content:newStatus];
   return [self sendAPIRequestWithURL:url HTTPMethod:@"PUT" body:body];
 }
-
 
 #pragma mark private
 

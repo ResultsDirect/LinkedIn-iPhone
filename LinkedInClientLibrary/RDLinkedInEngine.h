@@ -68,6 +68,7 @@ extern const NSUInteger kRDLinkedInMaxStatusLength;
 
 - (RDLinkedInConnectionID *)profileForCurrentUser;
 - (RDLinkedInConnectionID *)profileForPersonWithID:(NSString *)memberID;
+- (RDLinkedInConnectionID *)peopleSearch:(NSString *)query;
 
 - (RDLinkedInConnectionID *)updateStatus:(NSString *)newStatus;
 
