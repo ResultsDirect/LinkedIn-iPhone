@@ -158,7 +158,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 }
 
 - (RDLinkedInConnectionID *)peopleSearch:(NSString *)query {
-  NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people-search?%@",[query stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+  NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people-search%@",[query stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
   return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
 }	
 
