@@ -29,14 +29,10 @@
 }
 
 - (RDLinkedInConnectionID *)identifier {
-  if( !rdIdentifier ) {
-<<<<<<< HEAD
-	  rdIdentifier = [[[NSProcessInfo processInfo] globallyUniqueString] retain];
-=======
-    rdIdentifier = [[[NSProcessInfo processInfo] globallyUniqueString] retain];
->>>>>>> 53d3a306836213d6850569b1faeef04921df4c69
-  }
-  return rdIdentifier;
+	if( !rdIdentifier ) {
+		rdIdentifier = [[[NSProcessInfo processInfo] globallyUniqueString] retain];
+	}
+	return rdIdentifier;
 }
 
 - (NSData *)data {
