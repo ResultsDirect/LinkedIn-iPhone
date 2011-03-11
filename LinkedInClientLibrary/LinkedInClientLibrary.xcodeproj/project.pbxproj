@@ -18,8 +18,6 @@
 		9CA007D21163B53A00C23370 /* RDLinkedInResponseParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 9CA007C81163B53A00C23370 /* RDLinkedInResponseParser.h */; };
 		9CA007D31163B53A00C23370 /* RDLinkedInResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CA007C91163B53A00C23370 /* RDLinkedInResponseParser.m */; };
 		9CA008281163B67E00C23370 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CA008271163B67E00C23370 /* libxml2.dylib */; };
-		9CA008B51163BCF800C23370 /* NSString+UUID.h in Headers */ = {isa = PBXBuildFile; fileRef = 9CA008B31163BCF800C23370 /* NSString+UUID.h */; };
-		9CA008B61163BCF800C23370 /* NSString+UUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CA008B41163BCF800C23370 /* NSString+UUID.m */; };
 		9CA009981163C1D300C23370 /* libOAuthConsumer_iPhone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CA009971163C1CE00C23370 /* libOAuthConsumer_iPhone.a */; };
 		AA747D9F0F9514B9006C5449 /* LinkedInClientLibrary_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* LinkedInClientLibrary_Prefix.pch */; };
 		AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
@@ -54,8 +52,6 @@
 		9CA007C81163B53A00C23370 /* RDLinkedInResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDLinkedInResponseParser.h; sourceTree = "<group>"; };
 		9CA007C91163B53A00C23370 /* RDLinkedInResponseParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDLinkedInResponseParser.m; sourceTree = "<group>"; };
 		9CA008271163B67E00C23370 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
-		9CA008B31163BCF800C23370 /* NSString+UUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+UUID.h"; sourceTree = "<group>"; };
-		9CA008B41163BCF800C23370 /* NSString+UUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+UUID.m"; sourceTree = "<group>"; };
 		9CA0098F1163C1CE00C23370 /* OAuthConsumer-iPhoneLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "OAuthConsumer-iPhoneLib.xcodeproj"; path = "../OAuthConsumeriPhoneLib/OAuthConsumer-iPhoneLib.xcodeproj"; sourceTree = SOURCE_ROOT; };
 		AA747D9E0F9514B9006C5449 /* LinkedInClientLibrary_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinkedInClientLibrary_Prefix.pch; sourceTree = SOURCE_ROOT; };
 		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -126,8 +122,6 @@
 			isa = PBXGroup;
 			children = (
 				AA747D9E0F9514B9006C5449 /* LinkedInClientLibrary_Prefix.pch */,
-				9CA008B31163BCF800C23370 /* NSString+UUID.h */,
-				9CA008B41163BCF800C23370 /* NSString+UUID.m */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -153,7 +147,6 @@
 				9CA007CE1163B53A00C23370 /* RDLinkedInHTTPURLConnection.h in Headers */,
 				9CA007D01163B53A00C23370 /* RDLinkedInRequestBuilder.h in Headers */,
 				9CA007D21163B53A00C23370 /* RDLinkedInResponseParser.h in Headers */,
-				9CA008B51163BCF800C23370 /* NSString+UUID.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -229,7 +222,6 @@
 				9CA007CF1163B53A00C23370 /* RDLinkedInHTTPURLConnection.m in Sources */,
 				9CA007D11163B53A00C23370 /* RDLinkedInRequestBuilder.m in Sources */,
 				9CA007D31163B53A00C23370 /* RDLinkedInResponseParser.m in Sources */,
-				9CA008B61163BCF800C23370 /* NSString+UUID.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
