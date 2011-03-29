@@ -1,5 +1,8 @@
 .DS_Store
-build
+build/
 *.pbxuser
 *.perspectivev3
 *.mode1v3
+
+xcuserdata/
+
