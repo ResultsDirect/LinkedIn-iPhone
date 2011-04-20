@@ -79,7 +79,7 @@ NSString *const RDLinkedInResponseParserURLKey = @"RDLinkedInResponseParserURLKe
     int nodeType = xmlTextReaderNodeType(rdReader);
     int depth = xmlTextReaderDepth(rdReader);
     const xmlChar *name = xmlTextReaderConstName(rdReader);
-    //NSLog(@"read node type %2i at depth %3i: %s", nodeType, depth, name);
+   // NSLog(@"read node type %2i at depth %3i: %s", nodeType, depth, name);
     
     NSMutableString* text = nil;
     NSMutableDictionary* child = nil;
@@ -87,21 +87,28 @@ NSString *const RDLinkedInResponseParserURLKey = @"RDLinkedInResponseParserURLKe
     id currentValue = nil;
     id newValue = nil;
     
+	  BOOL forceEndElement = NO;
     switch( nodeType ) {
       case XML_READER_TYPE_ELEMENT:
         element = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                    [NSString stringWithUTF8String:(const char *)name], @"#name",
                    [NSMutableString string], @"#text",
                    nil];
+//			NSLog(@"new node %@", element);
         [elementStack addObject:element];
+//			NSLog(@"element empty? %d", xmlTextReaderIsEmptyElement(rdReader));
+			if(xmlTextReaderIsEmptyElement(rdReader) == 1){
+				forceEndElement = YES;
+			}
         break;
         
       case XML_READER_TYPE_TEXT:
         text = [element objectForKey:@"#text"];
         [text appendString:[NSMutableString stringWithUTF8String:(const char *)xmlTextReaderValue(rdReader)]];
         break;
-        
-      case XML_READER_TYPE_END_ELEMENT:
+	}
+	  if(nodeType == XML_READER_TYPE_END_ELEMENT || forceEndElement){
+			
         child = [element retain];
         [elementStack removeLastObject];
         //NSLog(@"popped node %@", child);
@@ -153,10 +160,11 @@ NSString *const RDLinkedInResponseParserURLKey = @"RDLinkedInResponseParserURLKe
         }
         [child release];
         [key release];
-        break;
+        //break;
     }
+//	  NSLog(@"rdResults: %@", rdResults);
   }
-  
+	
   [elementStack release];
   return !rdError;
 }

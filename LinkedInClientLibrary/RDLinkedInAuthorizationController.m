@@ -45,6 +45,7 @@
 
 - (void)dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
+	[self viewDidUnload];
   rdDelegate = nil;
   [rdEngine release];
   [super dealloc];
@@ -80,9 +81,12 @@
 - (void)viewDidUnload {
   [rdNavBar release];
   rdNavBar = nil;
+	rdWebView.delegate = nil;
   [rdWebView release];
   rdWebView = nil;
 }
+
+
 
 
 #pragma mark private
@@ -159,6 +163,18 @@
 	[rdWebView stringByEvaluatingJavaScriptFromString:scriptText];
 }
 
+-(NSDictionary *)parseQuery:(NSString *)query{
+	NSMutableDictionary *queryDictionary = [NSMutableDictionary dictionaryWithCapacity:3];
+	
+	NSArray *pairs = [query componentsSeparatedByString:@"&"];
+	for(NSString *pair in pairs){
+		NSArray *keyval = [pair componentsSeparatedByString:@"="];
+		if(keyval.count == 2){
+			[queryDictionary setObject:[keyval objectAtIndex:1] forKey:[keyval objectAtIndex:0]];
+		}
+	}
+	return queryDictionary;
+}
 
 #pragma mark UIWebViewDelegate
 
@@ -167,7 +183,7 @@
 }
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-  //NSLog(@"should web view load request? %@", request);
+//  NSLog(@"should web view load request? %@", request);
   NSString* host = [[request.URL host] lowercaseString];
   if( [@"linkedin_oauth" isEqualToString:host] ) {
     if( [[request.URL path] isEqualToString:@"/success"] ) {
@@ -176,6 +192,11 @@
       }
       else {
         //NSLog(@"did not find necessary information in the response!");
+		  NSDictionary *queryParams = [self parseQuery:request.URL.query];
+		  if([[queryParams objectForKey:@"oauth_problem"] isEqualToString:@"user_refused"]){
+//			  NSLog(@"did hit cancel");
+			  [self cancel];
+		  }
       }
     }
     else if( [[request.URL path] isEqualToString:@"/deny"] ) {
@@ -188,7 +209,7 @@
   }
   else if( [@"www.linkedin.com" isEqualToString:host] ) {
     if( ![[request.URL path] hasPrefix:@"/uas/oauth"] ) {
-      [[UIApplication sharedApplication] openURL:request.URL];
+//      [[UIApplication sharedApplication] openURL:request.URL];
     }
   }
   return YES;

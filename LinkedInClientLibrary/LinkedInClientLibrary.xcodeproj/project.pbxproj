@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		46E00E1B135F66AE00936325 /* GTMDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = 46E00E18135F66AE00936325 /* GTMDefines.h */; };
+		46E00E1C135F66AE00936325 /* GTMNSString+HTML.h in Headers */ = {isa = PBXBuildFile; fileRef = 46E00E19135F66AE00936325 /* GTMNSString+HTML.h */; };
+		46E00E1D135F66AE00936325 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 46E00E1A135F66AE00936325 /* GTMNSString+HTML.m */; };
 		9CA007CA1163B53A00C23370 /* RDLinkedInAuthorizationController.h in Headers */ = {isa = PBXBuildFile; fileRef = 9CA007C01163B53A00C23370 /* RDLinkedInAuthorizationController.h */; };
 		9CA007CB1163B53A00C23370 /* RDLinkedInAuthorizationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CA007C11163B53A00C23370 /* RDLinkedInAuthorizationController.m */; };
 		9CA007CC1163B53A00C23370 /* RDLinkedInEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = 9CA007C21163B53A00C23370 /* RDLinkedInEngine.h */; };
@@ -43,6 +46,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		46E00E18135F66AE00936325 /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
+		46E00E19135F66AE00936325 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
+		46E00E1A135F66AE00936325 /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
 		9CA007C01163B53A00C23370 /* RDLinkedInAuthorizationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDLinkedInAuthorizationController.h; sourceTree = "<group>"; };
 		9CA007C11163B53A00C23370 /* RDLinkedInAuthorizationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDLinkedInAuthorizationController.m; sourceTree = "<group>"; };
 		9CA007C21163B53A00C23370 /* RDLinkedInEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDLinkedInEngine.h; sourceTree = "<group>"; };
@@ -128,6 +134,9 @@
 				AA747D9E0F9514B9006C5449 /* LinkedInClientLibrary_Prefix.pch */,
 				9CA008B31163BCF800C23370 /* NSString+UUID.h */,
 				9CA008B41163BCF800C23370 /* NSString+UUID.m */,
+				46E00E18135F66AE00936325 /* GTMDefines.h */,
+				46E00E19135F66AE00936325 /* GTMNSString+HTML.h */,
+				46E00E1A135F66AE00936325 /* GTMNSString+HTML.m */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -154,6 +163,8 @@
 				9CA007D01163B53A00C23370 /* RDLinkedInRequestBuilder.h in Headers */,
 				9CA007D21163B53A00C23370 /* RDLinkedInResponseParser.h in Headers */,
 				9CA008B51163BCF800C23370 /* NSString+UUID.h in Headers */,
+				46E00E1B135F66AE00936325 /* GTMDefines.h in Headers */,
+				46E00E1C135F66AE00936325 /* GTMNSString+HTML.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,7 +196,11 @@
 			isa = PBXProject;
 			buildConfigurationList = 1DEB922208733DC00010E9CD /* Build configuration list for PBXProject "LinkedInClientLibrary" */;
 			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
 			mainGroup = 0867D691FE84028FC02AAC07 /* LinkedInClientLibrary */;
 			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
 			projectDirPath = "";
@@ -223,6 +238,7 @@
 				9CA007D11163B53A00C23370 /* RDLinkedInRequestBuilder.m in Sources */,
 				9CA007D31163B53A00C23370 /* RDLinkedInResponseParser.m in Sources */,
 				9CA008B61163BCF800C23370 /* NSString+UUID.m in Sources */,
+				46E00E1D135F66AE00936325 /* GTMNSString+HTML.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
