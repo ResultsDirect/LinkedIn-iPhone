@@ -125,7 +125,7 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider
     // sign
 	// Secrets must be urlencoded before concatenated with '&'
 	// TODO: if later RSA-SHA1 support is added then a little code redesign is needed
-
+	
 	
 	NSString					*consumerSecret = [self URLEncodedString: consumer.secret];
 	NSString					*tokenSecret = [self URLEncodedString: token.secret];
@@ -141,7 +141,7 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider
         oauthToken = [NSString stringWithFormat:@"oauth_token=\"%@\", ", [self URLEncodedString: token.key]];
     
     NSString *oauthHeader = [NSString stringWithFormat:
-			@"OAuth realm=\"%@\", oauth_consumer_key=\"%@\", %@oauth_signature_method=\"%@\", oauth_signature=\"%@\", oauth_timestamp=\"%@\", oauth_nonce=\"%@\", oauth_version=\"1.0\"",
+							 @"OAuth realm=\"%@\", oauth_consumer_key=\"%@\", %@oauth_signature_method=\"%@\", oauth_signature=\"%@\", oauth_timestamp=\"%@\", oauth_nonce=\"%@\", oauth_version=\"1.0\"",
                              [self URLEncodedString: realm],
                              [self URLEncodedString: consumer.key],
                              oauthToken,
@@ -183,7 +183,7 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider
 	[parameterPairs addObject:[[OARequestParameter requestParameterWithName:@"oauth_timestamp" value:timestamp] URLEncodedNameValuePair]];
 	[parameterPairs addObject:[[OARequestParameter requestParameterWithName:@"oauth_nonce" value:nonce] URLEncodedNameValuePair]];
 	[parameterPairs addObject:[[OARequestParameter requestParameterWithName:@"oauth_version" value:@"1.0"] URLEncodedNameValuePair]];
-
+	
     if (token.key.length > 0) [parameterPairs addObject:[[OARequestParameter requestParameterWithName:@"oauth_token" value:token.key] URLEncodedNameValuePair]];
     if (token.pin.length > 0) [parameterPairs addObject:[[OARequestParameter requestParameterWithName:@"oauth_verifier" value:token.pin] URLEncodedNameValuePair]];		//added for the Twitter OAuth implementation
     
@@ -217,15 +217,14 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider
 - (NSArray *)parameters 
 {
     NSString *encodedParameters;
-	BOOL shouldfree = NO;
+	//BOOL shouldfree = NO;
     
-    if ([[self HTTPMethod] isEqualToString:@"GET"] || [[self HTTPMethod] isEqualToString:@"DELETE"]) 
+    if ([[self HTTPMethod] isEqualToString:@"GET"] || [[self HTTPMethod] isEqualToString:@"DELETE"]) {
         encodedParameters = [[self URL] query];
-	else 
-	{
+	}else{
         // POST, PUT
-		shouldfree = YES;
-        encodedParameters = [[NSString alloc] initWithData:[self HTTPBody] encoding:NSASCIIStringEncoding];
+		//shouldfree = YES;
+        encodedParameters = [[[NSString alloc] initWithData:[self HTTPBody] encoding:NSASCIIStringEncoding] autorelease];
     }
     
     if ((encodedParameters == nil) || ([encodedParameters isEqualToString:@""]))
@@ -243,8 +242,8 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider
     }
     
 	// Cleanup
-	if (shouldfree)
-		[encodedParameters release];
+	//if (shouldfree)
+	//	[encodedParameters release];
 	
     return [requestParameters autorelease];
 }

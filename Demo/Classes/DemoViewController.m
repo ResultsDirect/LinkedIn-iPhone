@@ -54,7 +54,9 @@ static NSString *const kOAuthConsumerSecret  = @"";
 - (void)linkedInEngineAccessToken:(RDLinkedInEngine *)engine setAccessToken:(OAToken *)token {
 	[token storeInUserDefaultsWithServiceProviderName:@"LinkedIn" prefix:@"Demo"];
 }
-
+- (void)linkedInEngineAccessToken:(RDLinkedInEngine *)engine removeAccessToken:(OAToken *)token {
+	[token removeAccessTokenUsingServiceProviderName:@"LinkedIn" prefix:@"Demo"];
+}
 - (OAToken *)linkedInEngineAccessToken:(RDLinkedInEngine *)engine {
   return [[[OAToken alloc] initWithUserDefaultsUsingServiceProviderName:@"LinkedIn" prefix:@"Demo"] autorelease];
 }
