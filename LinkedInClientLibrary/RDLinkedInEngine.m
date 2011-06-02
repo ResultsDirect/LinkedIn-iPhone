@@ -9,13 +9,15 @@
 #import "RDLinkedInEngine.h"
 #import "RDLinkedInRequestBuilder.h"
 #import "RDLinkedInResponseParser.h"
+#import "GTMNSString+HTML.h"
 
 static NSString *const kAPIBaseURL           = @"http://api.linkedin.com";
 static NSString *const kOAuthRequestTokenURL = @"https://api.linkedin.com/uas/oauth/requestToken";
 static NSString *const kOAuthAccessTokenURL  = @"https://api.linkedin.com/uas/oauth/accessToken";
 static NSString *const kOAuthAuthorizeURL    = @"https://www.linkedin.com/uas/oauth/authorize";
+static NSString *const kOAuthInvalidateURL   = @"https://api.linkedin.com/uas/oauth/invalidateToken";
 
-static const unsigned char kRDLinkedInDebugLevel = 0;
+static const unsigned char kRDLinkedInDebugLevel = 0; //setto zero.
 
 NSString *const RDLinkedInEngineRequestTokenNotification = @"RDLinkedInEngineRequestTokenNotification";
 NSString *const RDLinkedInEngineAccessTokenNotification  = @"RDLinkedInEngineAccessTokenNotification";
@@ -144,24 +146,148 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
   return request;
 }
 
+- (void)requestAccessInvalidation {
+	[self sendTokenRequestWithURL:[NSURL URLWithString:kOAuthInvalidateURL]
+							token:rdOAuthRequestToken
+						onSuccess:@selector(logoutRequestSucceeded:data:)
+						   onFail:@selector(logoutRequestFailed:data:)];
+
+}
+
+-(void)logout{
+	[self requestAccessInvalidation];
+	
+	if( [rdDelegate respondsToSelector:@selector(linkedInEngineAccessToken:removeAccessToken:)] ) {
+		[rdDelegate linkedInEngineAccessToken:self removeAccessToken:rdOAuthAccessToken];
+	}
+	
+	[rdOAuthAccessToken release];
+	rdOAuthAccessToken = nil;
+
+	
+	NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
+	//NSLog(@"cookies: %@", cookies);
+	for(NSHTTPCookie *c in cookies){
+		[[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:c];
+	}
+	
+}
+
+-(void)logoutRequestFailed:(OAServiceTicket *)ticket data:(NSData *)data{
+	//NSLog(@"logoutRequestFailed");
+}
+-(void)logoutRequestSucceeded:(OAServiceTicket *)ticket data:(NSData *)data{
+	//NSLog(@"logoutRequestSucceeded");
+	//NSString *dataString = [[[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding] autorelease];
+	//NSLog(@"RESPONSE; %@", dataString);
+}
+
+- (RDLinkedInConnectionID *)sendInvitation:(NSString *)memberID subject:(NSString *)subject body:(NSString *)body
+						authorizationName:(NSString *)authorizationName authorizationValue:(NSString *)authorizationValue{
+	
+	//was lazy & couldn't figure out th xmlwriter stuff.
+	NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingString:@"/v1/people/~/mailbox"]];
+	
+	NSString *xmlRequest = [NSString stringWithFormat:@"<?xml version='1.0' encoding='UTF-8'?>\
+							<mailbox-item>\
+								<recipients>\
+									<recipient>\
+										<person path=\"/people/id=%@\" />\
+									</recipient>\
+								</recipients>\
+								<subject>%@</subject>\
+								<body>%@</body>\
+								<item-content>\
+									<invitation-request>\
+										<connect-type>friend</connect-type>\
+										<authorization>\
+											<name>%@</name>\
+											<value>%@</value>\
+										</authorization>\
+									</invitation-request>\
+								</item-content>\
+							</mailbox-item>",
+							memberID, subject, body, authorizationName, authorizationValue];
+	//NSLog(@"request: %@", xmlRequest);
+	NSData *requestData = [xmlRequest dataUsingEncoding:NSUTF8StringEncoding];
+	return [self sendAPIRequestWithURL:url HTTPMethod:@"POST" body:requestData];
+
+/*
+	RDLinkedInRequestBuilder *requestBuilder = [[RDLinkedInRequestBuilder alloc] init];
+	BOOL ret = [requestBuilder openNodeNamed:@"mailbox-item"];
+	NSLog(@"request: %@; ret = %d", [requestBuilder buffer], ret);
+
+	[requestBuilder openNodeNamed:@"recipients"];
+	[requestBuilder openNodeNamed:@"recipient"];
+	NSLog(@"request: %@", [requestBuilder buffer]);
+	NSString *personPath = [NSString stringWithFormat:@"/people/id=%@", memberID];
+	[requestBuilder addNodeNamed:@"person" attributes:[NSDictionary dictionaryWithObject:personPath forKey:@"path"]];
+	[requestBuilder closeNode]; //recipient
+	NSLog(@"request: %@", [requestBuilder buffer]);
+	[requestBuilder closeNode]; //recipients.
+	
+	[requestBuilder addNodeNamed:@"subject" content:subject];
+	[requestBuilder addNodeNamed:@"body" content:body];
+	NSLog(@"request: %@", [requestBuilder buffer]);
+	
+	[requestBuilder openNodeNamed:@"item-content"];
+	[requestBuilder openNodeNamed:@"invitation-request"];
+	NSLog(@"request: %@", [requestBuilder buffer]);
+	[requestBuilder addNodeNamed:@"connect-type" content:@"friend"];
+	[requestBuilder openNodeNamed:@"authorization"];
+	[requestBuilder addNodeNamed:@"name" content:authorizationName];
+	NSLog(@"request: %@", [requestBuilder buffer]);
+	[requestBuilder addNodeNamed:@"value" content:authorizationValue];
+	[requestBuilder closeNode]; //authorization
+	NSLog(@"request: %@", [requestBuilder buffer]);
+	[requestBuilder closeNode]; //invitation-request
+	[requestBuilder closeNode]; //item-content.
+	NSLog(@"request: %@", [requestBuilder buffer]);
+	[requestBuilder closeNode]; //mailbox-item
+	NSLog(@"request: %@", [requestBuilder buffer]);
+ NSData* requestData = [requestBuilder finish];
+ [requestBuilder release];
+	*/
+	
+	
+	
+}
+
 
 #pragma mark profile methods
 
+-(NSString *)fieldSelectors{
+	return @"id,first-name,last-name,headline,site-standard-profile-request,picture-url,distance";
+}
 - (RDLinkedInConnectionID *)profileForCurrentUser {
-  NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingString:@"/v1/people/~"]];
+  NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/~:(%@,positions:(title,company:(name)),api-standard-profile-request,connections:())", [self fieldSelectors]]]; //connections:(id),
+//	NSLog(@"profileForCurrentUser: %@", url);
   return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
 }
 
-- (RDLinkedInConnectionID *)profileForPersonWithID:(NSString *)memberID {
-  NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/id=%@", [memberID stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+- (RDLinkedInConnectionID *)profileForPersonWithID:(NSString *)memberID{
+//  NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/id=%@:(%@)", [memberID stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [self fieldSelectors]]];
+	  NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingFormat:@"/v1/people/id=%@:(id,distance)", [memberID stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+//	NSLog(@"profileForPersonWithID: %@ - %@", memberID, url);
   return [self sendAPIRequestWithURL:url HTTPMethod:@"GET" body:nil];
+}
+
+-(NSString *)linkedInLocaleCode{
+	//NSLocaleLanguageCode_NSLocaleCountryCode	
+	NSLocale *locale = [NSLocale currentLocale];
+	return [NSString stringWithFormat:@"%@_%@", [locale objectForKey:NSLocaleLanguageCode], [locale objectForKey:NSLocaleCountryCode]]; 
 }
 
 - (RDLinkedInConnectionID *)updateStatus:(NSString *)newStatus {
-  NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingString:@"/v1/people/~/current-status"]];
-  newStatus = [newStatus length] > kRDLinkedInMaxStatusLength ? [newStatus substringToIndex:kRDLinkedInMaxStatusLength] : newStatus;
-  NSData* body = [RDLinkedInRequestBuilder buildSimpleRequestWithRootNode:@"current-status" content:newStatus];
-  return [self sendAPIRequestWithURL:url HTTPMethod:@"PUT" body:body];
+	//http://developer.linkedin.com/docs/DOC-1009
+	NSURL* url = [NSURL URLWithString:[kAPIBaseURL stringByAppendingString:@"/v1/people/~/person-activities"]];
+	NSString *xmlRequest = [NSString stringWithFormat:@"<?xml version='1.0' encoding='UTF-8'?>\
+							<activity locale=\"%@\">\
+							<content-type>linkedin-html</content-type>\
+							<body>%@</body>\
+							</activity>", [self linkedInLocaleCode], [newStatus gtm_stringByEscapingForHTML]];
+	NSData *requestData = [xmlRequest dataUsingEncoding:NSUTF8StringEncoding];
+	return [self sendAPIRequestWithURL:url HTTPMethod:@"POST" body:requestData];
 }
 
 
@@ -203,6 +329,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
   NSError* error = nil;
   id results = nil;
   
+	//NSLog(@"response: %@", [[[NSString alloc] initWithData:[connection data] encoding:NSUTF8StringEncoding] autorelease]);
   if( [RDLinkedInResponseParser parseXML:[connection data] connection:connection results:&results error:&error] ) {
     if( [rdDelegate respondsToSelector:@selector(linkedInEngine:requestSucceeded:withResults:)] ) {
       [rdDelegate linkedInEngine:self requestSucceeded:connection.identifier withResults:results];
@@ -283,7 +410,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 
 
 - (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
-  //NSLog(@"received credential challenge!");
+  NSLog(@"received credential challenge!");
 	[[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
 }
 
@@ -313,8 +440,9 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
     }
     [self closeConnection:connection];
   }
-  else if( statusCode == 204 ) {
-    // no content; so skip the parsing, and declare success!
+  else if( statusCode == 204 || statusCode == 201) {
+    // 204: no content; so skip the parsing, and declare success!
+	// 201: created. declare success!
     if( [rdDelegate respondsToSelector:@selector(linkedInEngine:requestSucceeded:withResults:)] ) {
       [rdDelegate linkedInEngine:self requestSucceeded:connection.identifier withResults:nil];
     }
@@ -329,6 +457,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 
 
 - (void)connection:(RDLinkedInHTTPURLConnection *)connection didFailWithError:(NSError *)error {
+	NSLog(@"connection didFailWithError: %@", error);
 	if( [rdDelegate respondsToSelector:@selector(linkedInEngine:requestFailed:withError:)] ) {
 		[rdDelegate linkedInEngine:self requestFailed:connection.identifier withError:error];
   }
@@ -341,13 +470,14 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
   NSData *receivedData = [connection data];
   if( [receivedData length] ) {
     if( kRDLinkedInDebugLevel > 0 ) {
-      NSString *dataString = [NSString stringWithUTF8String:[receivedData bytes]];
-      NSLog(@"Succeeded! Received %d bytes of data:\r\r%@", [receivedData length], dataString);
+      //NSString *dataString = [NSString stringWithUTF8String:[receivedData bytes]];
+      //NSLog(@"Succeeded! Received %d bytes of data:\r\r%@", [receivedData length], dataString);
     }
     
     if( kRDLinkedInDebugLevel > 8 ) {
       // Dump XML to file for debugging.
       NSString *dataString = [NSString stringWithUTF8String:[receivedData bytes]];
+		//NSLog(@"connectionDidFinishLoading: %@", dataString);
       [dataString writeToFile:[@"~/Desktop/linkedin_messages.xml" stringByExpandingTildeInPath] 
                    atomically:NO encoding:NSUnicodeStringEncoding error:NULL];
     }

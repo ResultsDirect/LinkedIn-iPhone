@@ -31,6 +31,7 @@ extern const NSUInteger kRDLinkedInMaxStatusLength;
 @optional
 
 - (void)linkedInEngineAccessToken:(RDLinkedInEngine *)engine setAccessToken:(OAToken *)token;
+- (void)linkedInEngineAccessToken:(RDLinkedInEngine *)engine removeAccessToken:(OAToken *)token;
 - (OAToken *)linkedInEngineAccessToken:(RDLinkedInEngine *)engine;
 
 - (void)linkedInEngine:(RDLinkedInEngine *)engine requestSucceeded:(RDLinkedInConnectionID *)identifier withResults:(id)results;
@@ -67,8 +68,16 @@ extern const NSUInteger kRDLinkedInMaxStatusLength;
 - (NSURLRequest *)authorizationFormURLRequest;
 
 - (RDLinkedInConnectionID *)profileForCurrentUser;
+//- (RDLinkedInConnectionID *)profileForPersonWithID:(NSString *)memberID 
+//								 authorizationName:(NSString *)authorizationName 
+//								authorizationValue:(NSString *)authorizationValue;
 - (RDLinkedInConnectionID *)profileForPersonWithID:(NSString *)memberID;
 
 - (RDLinkedInConnectionID *)updateStatus:(NSString *)newStatus;
+
+-(void)logout;
+- (RDLinkedInConnectionID *)sendInvitation:(NSString *)memberID subject:(NSString *)subject body:(NSString *)body 
+						 authorizationName:(NSString *)authorizationName
+						authorizationValue:(NSString *)authorizationValue;
 
 @end

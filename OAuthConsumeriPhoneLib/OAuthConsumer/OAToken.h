@@ -42,4 +42,6 @@
 - (id)initWithHTTPResponseBody:(NSString *)body;
 - (int)storeInUserDefaultsWithServiceProviderName:(NSString *)provider prefix:(NSString *)prefix;
 
+-(void)removeAccessTokenUsingServiceProviderName:(NSString *)provider prefix:(NSString *)prefix;
+
 @end

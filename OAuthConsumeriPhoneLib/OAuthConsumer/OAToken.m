@@ -104,5 +104,10 @@
 	[[NSUserDefaults standardUserDefaults] synchronize];
 	return(0);
 }
+-(void)removeAccessTokenUsingServiceProviderName:(NSString *)provider prefix:(NSString *)prefix{
+	[[NSUserDefaults standardUserDefaults] removeObjectForKey:[NSString stringWithFormat:@"OAUTH_%@_%@_KEY", prefix, provider]];
+	[[NSUserDefaults standardUserDefaults] removeObjectForKey:[NSString stringWithFormat:@"OAUTH_%@_%@_SECRET", prefix, provider]];
+	[[NSUserDefaults standardUserDefaults] synchronize];
+}
 
 @end
