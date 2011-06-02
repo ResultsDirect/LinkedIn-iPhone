@@ -8,6 +8,7 @@
 
 #import "RDLinkedInAuthorizationController.h"
 #import "RDLinkedInEngine.h"
+#import "RDLogging.h"
 
 
 @interface RDLinkedInAuthorizationController ()
@@ -148,26 +149,23 @@
  * This is just to adjust the formatting of the page to render better in the limited screen size.
  */
 - (void)performInjection {
-	NSError*  error = nil;
-	NSString* path = [rdEngine pathForBundleResource:@"LinkedIn_JSInject" ofType:@"txt"];
+  NSError*  error = nil;
+  NSString* path = [rdEngine pathForBundleResource:@"LinkedIn_JSInject" ofType:@"txt"];
   NSString* scriptText = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
-	
-  if( scriptText == nil ) {
-    NSLog(@"An error occured in RDLinkedInAuthorizationController while processing the JavaScript injection file");
-  }
-	
-	[rdWebView stringByEvaluatingJavaScriptFromString:scriptText];
+  
+  NSAssert(scriptText != nil, @"Could not load JavaScript injection file: %@", error);
+  
+  [rdWebView stringByEvaluatingJavaScriptFromString:scriptText];
 }
 
 
 #pragma mark UIWebViewDelegate
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-  //NSLog(@"web view failed loading %@", [error localizedDescription]);
+  NSAssert2(NO, @"Did not load page %@; error: %@", webView.request, error);
 }
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-  //NSLog(@"should web view load request? %@", request);
   NSString* host = [[request.URL host] lowercaseString];
   if( [@"linkedin_oauth" isEqualToString:host] ) {
     if( [[request.URL path] isEqualToString:@"/success"] ) {
@@ -175,7 +173,7 @@
         [rdEngine requestAccessToken];
       }
       else {
-        //NSLog(@"did not find necessary information in the response!");
+        NSAssert1(NO, @"Did not find necessary information in authorization response page: %@", request);
       }
     }
     else if( [[request.URL path] isEqualToString:@"/deny"] ) {
@@ -187,7 +185,7 @@
     return YES;
   }
   else if( [@"www.linkedin.com" isEqualToString:host] ) {
-    if( ![[request.URL path] hasPrefix:@"/uas/oauth"] ) {
+    if( ![[request.URL path] hasPrefix:@"/uas/"] ) {
       [[UIApplication sharedApplication] openURL:request.URL];
     }
   }
@@ -195,11 +193,11 @@
 }
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {
-  //NSLog(@"web view started loading");
+  //RDLOG(@"web view started loading");
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
-  //NSLog(@"web view finished loading");
+  //RDLOG(@"web view finished loading");
   [self performInjection];
 }
 
