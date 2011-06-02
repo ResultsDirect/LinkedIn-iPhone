@@ -7,14 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "RDLinkedInEngine.h"
-#import "RDLinkedInAuthorizationController.h"
+#import "RDLinkedInEngineDelegate.h"
+#import "RDLinkedInAuthorizationControllerDelegate.h"
 
 
-@interface DemoViewController : UIViewController <RDLinkedInEngineDelegate, RDLinkedInAuthorizationControllerDelegate> {
-  RDLinkedInEngine* rdEngine;
-  BOOL rdHasAppeared;
+@interface DemoViewController : UIViewController <RDLinkedInEngineDelegate, RDLinkedInAuthorizationControllerDelegate>
+{
 }
+
+@property (nonatomic, retain) IBOutlet UILabel *statusLabel;
+@property (nonatomic, retain) IBOutlet UIButton *logInButton;
+@property (nonatomic, retain) IBOutlet UIButton *logOutButton;
+
+- (IBAction)logIn:(id)sender;
+- (IBAction)logOut:(id)sender;
 
 @end
 

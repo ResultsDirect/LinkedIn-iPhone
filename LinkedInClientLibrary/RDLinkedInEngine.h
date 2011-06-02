@@ -12,12 +12,12 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <OAuthConsumer/OAToken.h>
 
 #import "RDLinkedInTypes.h"
+#import "RDLinkedInEngineDelegate.h"
 
 @class OAConsumer;
-@class RDLinkedInEngine;
+@class OAToken;
 
 
 extern NSString *const RDLinkedInEngineRequestTokenNotification;
@@ -26,19 +26,6 @@ extern NSString *const RDLinkedInEngineAuthFailureNotification;
 extern NSString *const RDLinkedInEngineTokenKey;
 
 extern const NSUInteger kRDLinkedInMaxStatusLength;
-
-
-@protocol RDLinkedInEngineDelegate <NSObject>
-  
-@optional
-
-- (void)linkedInEngineAccessToken:(RDLinkedInEngine *)engine setAccessToken:(OAToken *)token;
-- (OAToken *)linkedInEngineAccessToken:(RDLinkedInEngine *)engine;
-
-- (void)linkedInEngine:(RDLinkedInEngine *)engine requestSucceeded:(RDLinkedInConnectionID *)identifier withResults:(id)results;
-- (void)linkedInEngine:(RDLinkedInEngine *)engine requestFailed:(RDLinkedInConnectionID *)identifier withError:(NSError *)error;
-
-@end
 
 
 @interface RDLinkedInEngine : NSObject {
@@ -57,17 +44,18 @@ extern const NSUInteger kRDLinkedInMaxStatusLength;
 + (id)engineWithConsumerKey:(NSString *)consumerKey consumerSecret:(NSString *)consumerSecret delegate:(id<RDLinkedInEngineDelegate>)delegate;
 - (id)initWithConsumerKey:(NSString *)consumerKey consumerSecret:(NSString *)consumerSecret delegate:(id<RDLinkedInEngineDelegate>)delegate;
 
-- (NSString *)pathForBundleResource:(NSString *)name ofType:(NSString *)ext;
-
+// connection management
 - (NSUInteger)numberOfConnections;
 - (NSArray *)connectionIdentifiers;
 - (void)closeConnectionWithID:(RDLinkedInConnectionID *)identifier;
 - (void)closeAllConnections;
 
+// authorization
 - (void)requestRequestToken;
 - (void)requestAccessToken;
 - (NSURLRequest *)authorizationFormURLRequest;
 
+// API methods
 - (RDLinkedInConnectionID *)profileForCurrentUser;
 - (RDLinkedInConnectionID *)profileForPersonWithID:(NSString *)memberID;
 

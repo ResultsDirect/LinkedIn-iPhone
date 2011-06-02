@@ -66,20 +66,6 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 }
 
 
-#pragma mark misc public methods
-
-- (NSString *)pathForBundleResource:(NSString *)name ofType:(NSString *)ext {
-  static NSBundle* bundle = nil;
-  if( !bundle ) {
-    NSString* path = [[[NSBundle mainBundle] resourcePath]
-                      stringByAppendingPathComponent:@"LinkedIn.bundle"];
-    bundle = [[NSBundle bundleWithPath:path] retain];
-  }
-  
-  return [bundle pathForResource:name ofType:ext];
-}
-
-
 #pragma mark connection methods
 
 - (NSUInteger)numberOfConnections {

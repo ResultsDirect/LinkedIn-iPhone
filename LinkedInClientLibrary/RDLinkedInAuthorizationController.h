@@ -11,17 +11,9 @@
 
 #import <UIKit/UIKit.h>
 
-@class RDLinkedInAuthorizationController, RDLinkedInEngine;
+#import "RDLinkedInAuthorizationControllerDelegate.h"
 
-
-@protocol RDLinkedInAuthorizationControllerDelegate <NSObject>
-
-@optional
-- (void)linkedInAuthorizationControllerSucceeded:(RDLinkedInAuthorizationController *)controller;
-- (void)linkedInAuthorizationControllerFailed:(RDLinkedInAuthorizationController *)controller;
-- (void)linkedInAuthorizationControllerCanceled:(RDLinkedInAuthorizationController *)controller;
-
-@end
+@class RDLinkedInEngine;
 
 
 @interface RDLinkedInAuthorizationController : UIViewController <UIWebViewDelegate> {
