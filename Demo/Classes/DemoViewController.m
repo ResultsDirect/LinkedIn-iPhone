@@ -19,8 +19,10 @@ static NSString *const kOAuthConsumerSecret  = @"";
 @interface DemoViewController ()
 
 @property (nonatomic, retain) RDLinkedInEngine* engine;
+@property (nonatomic, retain) RDLinkedInConnectionID* fetchConnection;
 
 - (void)updateUI:(NSString *)status;
+- (void)fetchProfile;
 
 @end
 
@@ -31,6 +33,7 @@ static NSString *const kOAuthConsumerSecret  = @"";
 @synthesize logInButton;
 @synthesize logOutButton;
 @synthesize engine;
+@synthesize fetchConnection;
 
 
 #pragma mark - public API
@@ -71,6 +74,11 @@ static NSString *const kOAuthConsumerSecret  = @"";
   }
 }
 
+- (void)fetchProfile {
+  self.fetchConnection = [self.engine profileForCurrentUser];
+  [self updateUI:[@"fetching profile on " stringByAppendingString:[self.fetchConnection description]]];
+}
+
 
 #pragma mark - view lifecycle
 
@@ -83,6 +91,9 @@ static NSString *const kOAuthConsumerSecret  = @"";
 - (void)viewDidLoad {
   [super viewDidLoad];
   [self updateUI:nil];
+  if( self.engine.isAuthorized ) {
+    [self fetchProfile];
+  }
 }
 
 - (void)viewDidUnload {
@@ -93,6 +104,9 @@ static NSString *const kOAuthConsumerSecret  = @"";
 }
 
 - (void)dealloc {
+  if( fetchConnection ) [engine closeConnectionWithID:fetchConnection];
+  
+  [fetchConnection release];
   [engine release];
   [statusLabel release];
   [logInButton release];
@@ -119,6 +133,10 @@ static NSString *const kOAuthConsumerSecret  = @"";
 
 - (void)linkedInEngine:(RDLinkedInEngine *)engine requestSucceeded:(RDLinkedInConnectionID *)identifier withResults:(id)results {
   NSLog(@"++ LinkedIn engine reports success for connection %@\n%@", identifier, results);
+  if( identifier == self.fetchConnection ) {
+    NSDictionary* profile = results;
+    [self updateUI:[NSString stringWithFormat:@"got profile for %@ %@", [profile objectForKey:@"first-name"], [profile objectForKey:@"last-name"]]];
+  }
 }
 
 - (void)linkedInEngine:(RDLinkedInEngine *)engine requestFailed:(RDLinkedInConnectionID *)identifier withError:(NSError *)error {
@@ -129,8 +147,7 @@ static NSString *const kOAuthConsumerSecret  = @"";
 #pragma mark - RDLinkedInAuthorizationControllerDelegate
 
 - (void)linkedInAuthorizationControllerSucceeded:(RDLinkedInAuthorizationController *)controller {
-  [self updateUI:nil];
-  NSLog(@"Fetching current user's profile on connection %@", [controller.engine profileForCurrentUser]);
+  [self fetchProfile];
 }
 
 - (void)linkedInAuthorizationControllerFailed:(RDLinkedInAuthorizationController *)controller {
