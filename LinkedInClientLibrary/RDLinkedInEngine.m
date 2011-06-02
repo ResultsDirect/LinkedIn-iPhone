@@ -18,11 +18,13 @@ static NSString *const kAPIBaseURL           = @"http://api.linkedin.com";
 static NSString *const kOAuthRequestTokenURL = @"https://api.linkedin.com/uas/oauth/requestToken";
 static NSString *const kOAuthAccessTokenURL  = @"https://api.linkedin.com/uas/oauth/accessToken";
 static NSString *const kOAuthAuthorizeURL    = @"https://www.linkedin.com/uas/oauth/authorize";
+static NSString *const kOAuthInvalidateURL   = @"https://api.linkedin.com/uas/oauth/invalidateToken";
 
 static const unsigned char kRDLinkedInDebugLevel = 0;
 
 NSString *const RDLinkedInEngineRequestTokenNotification = @"RDLinkedInEngineRequestTokenNotification";
 NSString *const RDLinkedInEngineAccessTokenNotification  = @"RDLinkedInEngineAccessTokenNotification";
+NSString *const RDLinkedInEngineTokenInvalidationNotification  = @"RDLinkedInEngineTokenInvalidationNotification";
 NSString *const RDLinkedInEngineAuthFailureNotification  = @"RDLinkedInEngineAuthFailureNotification";
 NSString *const RDLinkedInEngineTokenKey                 = @"RDLinkedInEngineTokenKey";
 
@@ -126,6 +128,13 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
   [self sendTokenRequestWithURL:[NSURL URLWithString:kOAuthAccessTokenURL]
                           token:rdOAuthRequestToken
                       onSuccess:@selector(setAccessTokenFromTicket:data:)
+                         onFail:@selector(oauthTicketFailed:data:)];
+}
+
+- (void)requestTokenInvalidation {
+  [self sendTokenRequestWithURL:[NSURL URLWithString:kOAuthInvalidateURL]
+                          token:rdOAuthRequestToken
+                      onSuccess:@selector(tokenInvalidationSucceeded:data:)
                          onFail:@selector(oauthTicketFailed:data:)];
 }
 
@@ -267,6 +276,28 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
   [[NSNotificationCenter defaultCenter]
    postNotificationName:RDLinkedInEngineAccessTokenNotification object:self
    userInfo:[NSDictionary dictionaryWithObject:rdOAuthAccessToken forKey:RDLinkedInEngineTokenKey]];
+}
+
+- (void)tokenInvalidationSucceeded:(OAServiceTicket *)ticket data:(NSData *)data {
+  OAToken* invalidToken = [rdOAuthAccessToken retain];
+  [rdOAuthAccessToken release];
+  rdOAuthAccessToken = nil;
+  
+  NSHTTPCookieStorage* cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+  for( NSHTTPCookie *c in [cookieStorage cookies] ){
+    if( [[c domain] hasSuffix:@".linkedin.com"] ) {
+      [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:c];
+    }
+  }
+  
+  if( [rdDelegate respondsToSelector:@selector(linkedInEngineAccessToken:setAccessToken:)] ) {
+    [rdDelegate linkedInEngineAccessToken:self setAccessToken:nil];
+  }
+  
+  // notification of token invalidation
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:RDLinkedInEngineTokenInvalidationNotification object:self
+   userInfo:[NSDictionary dictionaryWithObject:invalidToken forKey:RDLinkedInEngineTokenKey]];
 }
 
 

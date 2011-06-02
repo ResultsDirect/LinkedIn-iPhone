@@ -22,6 +22,7 @@
 
 extern NSString *const RDLinkedInEngineRequestTokenNotification;
 extern NSString *const RDLinkedInEngineAccessTokenNotification;
+extern NSString *const RDLinkedInEngineTokenInvalidationNotification;
 extern NSString *const RDLinkedInEngineAuthFailureNotification;
 extern NSString *const RDLinkedInEngineTokenKey;
 
@@ -53,6 +54,7 @@ extern const NSUInteger kRDLinkedInMaxStatusLength;
 // authorization
 - (void)requestRequestToken;
 - (void)requestAccessToken;
+- (void)requestTokenInvalidation;
 - (NSURLRequest *)authorizationFormURLRequest;
 
 // API methods
