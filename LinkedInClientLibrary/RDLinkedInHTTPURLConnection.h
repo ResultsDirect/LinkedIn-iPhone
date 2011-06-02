@@ -11,7 +11,7 @@
 
 #import <Foundation/Foundation.h>
 
-#define RDLinkedInConnectionID NSString
+#import "RDLinkedInTypes.h"
 
 
 @interface RDLinkedInHTTPURLConnection : NSURLConnection {

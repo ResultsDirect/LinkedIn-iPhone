@@ -6,7 +6,10 @@
 //  Copyright 2010 Results Direct. All rights reserved.
 //
 
+#import <OAuthConsumer/OAuthConsumer.h>
+
 #import "RDLinkedInEngine.h"
+#import "RDLinkedInHTTPURLConnection.h"
 #import "RDLinkedInRequestBuilder.h"
 #import "RDLinkedInResponseParser.h"
 #import "RDLogging.h"

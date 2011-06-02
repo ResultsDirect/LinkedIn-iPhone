@@ -6,6 +6,8 @@
 //  Copyright 2010 Results Direct. All rights reserved.
 //
 
+#import <OAuthConsumer/OAuthConsumer.h>
+
 #import "RDLinkedInAuthorizationController.h"
 #import "RDLinkedInEngine.h"
 #import "RDLogging.h"
@@ -46,8 +48,13 @@
 }
 
 - (void)dealloc {
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
   rdDelegate = nil;
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+  rdWebView.delegate = nil;
+  [rdWebView stopLoading];
+  
+  [rdWebView release];
+  [rdNavBar release];
   [rdEngine release];
   [super dealloc];
 }
@@ -55,7 +62,7 @@
 
 - (void)loadView {
   [super loadView];
-	self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+  self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
   
   rdNavBar = [[UINavigationBar alloc] initWithFrame:CGRectZero];
   [rdNavBar setItems:[NSArray arrayWithObject:[[[UINavigationItem alloc] initWithTitle:@"LinkedIn Authorization"] autorelease]]];
@@ -80,34 +87,37 @@
 }
 
 - (void)viewDidUnload {
-  [rdNavBar release];
-  rdNavBar = nil;
+  rdWebView.delegate = nil;
+  [rdWebView stopLoading];
   [rdWebView release];
   rdWebView = nil;
+  
+  [rdNavBar release];
+  rdNavBar = nil;
 }
 
 
 #pragma mark private
 
 - (void)cancel {
-	if( [rdDelegate respondsToSelector:@selector(linkedInAuthorizationControllerCanceled:)] ) {
+  if( [rdDelegate respondsToSelector:@selector(linkedInAuthorizationControllerCanceled:)] ) {
     [rdDelegate linkedInAuthorizationControllerCanceled:self];
   }
-	[self performSelector:@selector(dismissModalViewControllerAnimated:) withObject:(id)kCFBooleanTrue afterDelay:0.0];
+  [self performSelector:@selector(dismissModalViewControllerAnimated:) withObject:(id)kCFBooleanTrue afterDelay:0.0];
 }
 
 - (void)denied {
-	if( [rdDelegate respondsToSelector:@selector(linkedInAuthorizationControllerFailed:)] ) {
+  if( [rdDelegate respondsToSelector:@selector(linkedInAuthorizationControllerFailed:)] ) {
     [rdDelegate linkedInAuthorizationControllerFailed:self];
   }
-	[self performSelector:@selector(dismissModalViewControllerAnimated:) withObject:(id)kCFBooleanTrue afterDelay:0.0];
+  [self performSelector:@selector(dismissModalViewControllerAnimated:) withObject:(id)kCFBooleanTrue afterDelay:0.0];
 }
 
 - (void)success {
-	if( [rdDelegate respondsToSelector:@selector(linkedInAuthorizationControllerSucceeded:)] ) {
+  if( [rdDelegate respondsToSelector:@selector(linkedInAuthorizationControllerSucceeded:)] ) {
     [rdDelegate linkedInAuthorizationControllerSucceeded:self];
   }
-	[self performSelector:@selector(dismissModalViewControllerAnimated:) withObject:(id)kCFBooleanTrue afterDelay:1.0];
+  [self performSelector:@selector(dismissModalViewControllerAnimated:) withObject:(id)kCFBooleanTrue afterDelay:1.0];
 }
 
 - (void)displayAuthorization {

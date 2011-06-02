@@ -10,7 +10,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <OAuthConsumer/OAuthConsumer.h>
 
 @class RDLinkedInAuthorizationController, RDLinkedInEngine;
 
@@ -28,7 +27,7 @@
 @interface RDLinkedInAuthorizationController : UIViewController <UIWebViewDelegate> {
   id<RDLinkedInAuthorizationControllerDelegate> rdDelegate;
   RDLinkedInEngine* rdEngine;
-	UINavigationBar*  rdNavBar;
+  UINavigationBar*  rdNavBar;
   UIWebView*        rdWebView;
 }
 

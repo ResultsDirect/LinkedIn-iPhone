@@ -12,9 +12,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <OAuthConsumer/OAuthConsumer.h>
-#import "RDLinkedInHTTPURLConnection.h"
+#import <OAuthConsumer/OAToken.h>
 
+#import "RDLinkedInTypes.h"
+
+@class OAConsumer;
 @class RDLinkedInEngine;
 
 
@@ -41,9 +43,9 @@ extern const NSUInteger kRDLinkedInMaxStatusLength;
 
 @interface RDLinkedInEngine : NSObject {
   id<RDLinkedInEngineDelegate> rdDelegate;
-	OAConsumer* rdOAuthConsumer;
-	OAToken*    rdOAuthRequestToken;
-	OAToken*    rdOAuthAccessToken;
+  OAConsumer* rdOAuthConsumer;
+  OAToken*    rdOAuthRequestToken;
+  OAToken*    rdOAuthAccessToken;
   NSString*   rdOAuthVerifier;
   NSMutableDictionary* rdConnections;
 }

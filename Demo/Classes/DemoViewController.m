@@ -25,7 +25,7 @@ static NSString *const kOAuthConsumerSecret  = @"";
   [super viewDidAppear:animated];
   
   if( !rdHasAppeared ) {
-    UIViewController* controller = [RDLinkedInAuthorizationController authorizationControllerWithEngine:rdEngine delegate:self];
+    RDLinkedInAuthorizationController* controller = [RDLinkedInAuthorizationController authorizationControllerWithEngine:rdEngine delegate:self];
     if( controller ) {
       [self presentModalViewController:controller animated:YES];
       rdHasAppeared = YES;
