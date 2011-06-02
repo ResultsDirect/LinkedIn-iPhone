@@ -1,4 +1,0 @@
-var cancelLink = document.querySelector("form[name='oauthAuthorizeForm'] .btn-primary ~ a");
-if( cancelLink ) {
-  cancelLink.href = "http://linkedin_oauth/deny";
-}

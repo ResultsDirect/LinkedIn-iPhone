@@ -125,38 +125,24 @@
 }
 
 - (BOOL)extractInfoFromHTTPRequest:(NSURLRequest *)request {
-	if( !request ) return NO;
-	
-	NSArray* tuples = [[request.URL query] componentsSeparatedByString: @"&"];
-	for( NSString *tuple in tuples ) {
-		NSArray *keyValueArray = [tuple componentsSeparatedByString: @"="];
-		
-		if( keyValueArray.count == 2 ) {
-			NSString* key   = [keyValueArray objectAtIndex: 0];
-			NSString* value = [keyValueArray objectAtIndex: 1];
-			
-			if( [key isEqualToString:@"oauth_verifier"] ) {
+  if( !request ) return NO;
+  
+  NSArray* tuples = [[request.URL query] componentsSeparatedByString: @"&"];
+  for( NSString *tuple in tuples ) {
+    NSArray *keyValueArray = [tuple componentsSeparatedByString: @"="];
+    
+    if( keyValueArray.count == 2 ) {
+      NSString* key   = [keyValueArray objectAtIndex: 0];
+      NSString* value = [keyValueArray objectAtIndex: 1];
+      
+      if( [key isEqualToString:@"oauth_verifier"] ) {
         rdEngine.verifier = value;
         return YES;
       }
-		}
-	}
-	
-	return NO;
-}
-
-/**
- * Inject some JavaScript code into the web view after the LinkedIn authorization form loads.
- * This is just to adjust the formatting of the page to render better in the limited screen size.
- */
-- (void)performInjection {
-  NSError*  error = nil;
-  NSString* path = [rdEngine pathForBundleResource:@"LinkedIn_JSInject" ofType:@"txt"];
-  NSString* scriptText = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
+    }
+  }
   
-  NSAssert(scriptText != nil, @"Could not load JavaScript injection file: %@", error);
-  
-  [rdWebView stringByEvaluatingJavaScriptFromString:scriptText];
+  return NO;
 }
 
 
@@ -170,20 +156,25 @@
   NSString* host = [[request.URL host] lowercaseString];
   if( [@"linkedin_oauth" isEqualToString:host] ) {
     if( [[request.URL path] isEqualToString:@"/success"] ) {
-      if( [self extractInfoFromHTTPRequest:request] ) {
+      // cancel button will redirect to callback URL with an argument, so check that first
+      if( [[[[request.URL query] lowercaseString] componentsSeparatedByString:@"&"] containsObject:@"oauth_problem=user_refused"] ) {
+        [self cancel];
+      }
+      else if( [self extractInfoFromHTTPRequest:request] ) {
         [rdEngine requestAccessToken];
       }
       else {
-        NSAssert1(NO, @"Did not find necessary information in authorization response page: %@", request);
+        NSAssert1(NO, @"Trying to load callback page, but insufficient information: %@", request);
       }
     }
     else if( [[request.URL path] isEqualToString:@"/deny"] ) {
+      // leaving this path in for backwards-compatibility
       [self denied];
     }
+    else {
+      NSAssert1(NO, @"Unknown callback URL variant: %@", request);
+    }
     return NO;
-  }
-  else if( [@"api.linkedin.com" isEqualToString:host] ) {
-    return YES;
   }
   else if( [@"www.linkedin.com" isEqualToString:host] ) {
     if( ![[request.URL path] hasPrefix:@"/uas/"] ) {
@@ -199,7 +190,6 @@
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
   //RDLOG(@"web view finished loading");
-  [self performInjection];
 }
 
 @end

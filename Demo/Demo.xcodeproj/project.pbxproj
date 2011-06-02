@@ -17,7 +17,6 @@
 		28D7ACF80DDB3853001CB0EB /* DemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28D7ACF70DDB3853001CB0EB /* DemoViewController.m */; };
 		9CA009CD1163C2CE00C23370 /* libLinkedInClientLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CA009CC1163C2CB00C23370 /* libLinkedInClientLibrary.a */; };
 		9CA00A931163CCD500C23370 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CA00A921163CCD500C23370 /* libxml2.dylib */; };
-		9CA00AE11163D04300C23370 /* LinkedIn.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 9CA00AE01163D04300C23370 /* LinkedIn.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,7 +52,6 @@
 		8D1107310486CEB800E47090 /* Demo-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Demo-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		9CA009C01163C2CB00C23370 /* LinkedInClientLibrary.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = LinkedInClientLibrary.xcodeproj; path = ../LinkedInClientLibrary/LinkedInClientLibrary.xcodeproj; sourceTree = SOURCE_ROOT; };
 		9CA00A921163CCD500C23370 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
-		9CA00AE01163D04300C23370 /* LinkedIn.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = LinkedIn.bundle; path = ../LinkedInClientLibrary/LinkedIn.bundle; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,7 +116,6 @@
 				2899E5210DE3E06400AC0155 /* DemoViewController.xib */,
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
 				8D1107310486CEB800E47090 /* Demo-Info.plist */,
-				9CA00AE01163D04300C23370 /* LinkedIn.bundle */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -208,7 +205,6 @@
 			files = (
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
 				2899E5220DE3E06400AC0155 /* DemoViewController.xib in Resources */,
-				9CA00AE11163D04300C23370 /* LinkedIn.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
