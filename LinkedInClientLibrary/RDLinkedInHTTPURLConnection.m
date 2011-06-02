@@ -14,7 +14,8 @@
 @synthesize request = rdRequest;
 
 - (id)initWithRequest:(NSURLRequest *)request delegate:(id)delegate {
-  if( self = [super initWithRequest:request delegate:delegate] ) {
+  self = [super initWithRequest:request delegate:delegate];
+  if( self != nil ) {
     rdRequest = [request retain];
     rdData = [[NSMutableData alloc] init];
   }

@@ -43,7 +43,8 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 }
 
 - (id)initWithConsumerKey:(NSString *)consumerKey consumerSecret:(NSString *)consumerSecret delegate:(id<RDLinkedInEngineDelegate>)delegate {
-  if( self = [super init] ) {
+  self = [super init];
+  if( self != nil ) {
     rdDelegate = delegate;
     rdOAuthConsumer = [[OAConsumer alloc] initWithKey:consumerKey secret:consumerSecret];
     rdConnections = [[NSMutableDictionary alloc] init];

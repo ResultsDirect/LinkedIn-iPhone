@@ -28,7 +28,8 @@
 }
 
 - (id)initWithEngine:(RDLinkedInEngine *)engine delegate:(id<RDLinkedInAuthorizationControllerDelegate>)delegate {
-  if( self = [super initWithNibName:nil bundle:nil] ) {
+  self = [super initWithNibName:nil bundle:nil];
+  if( self != nil ) {
     rdDelegate = delegate;
     rdEngine = [engine retain];
     

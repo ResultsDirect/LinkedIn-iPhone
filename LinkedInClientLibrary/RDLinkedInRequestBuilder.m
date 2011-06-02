@@ -25,10 +25,11 @@ static const char * kUTF8String = "UTF-8";
 }
 
 - (id)init {
-  if( self = [super init] ) {
+  self = [super init];
+  if( self != nil ) {
     BOOL success = NO;
-    if( rdBuffer = xmlBufferCreate() ) {
-      if( rdWriter = xmlNewTextWriterMemory(rdBuffer, 0) ) {
+    if( (rdBuffer = xmlBufferCreate()) ) {
+      if( (rdWriter = xmlNewTextWriterMemory(rdBuffer, 0)) ) {
         if( xmlTextWriterStartDocument(rdWriter, NULL, kUTF8String, NULL) >= 0 ) {
           success = YES;
         }

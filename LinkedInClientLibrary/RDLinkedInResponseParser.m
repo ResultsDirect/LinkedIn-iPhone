@@ -29,7 +29,8 @@ NSString *const RDLinkedInResponseParserURLKey = @"RDLinkedInResponseParserURLKe
 }
 
 - (id)initWithXML:(NSData *)xml connection:(RDLinkedInHTTPURLConnection *)connection {
-  if( self = [super init] ) {
+  self = [super init];
+  if( self != nil ) {
     rdXML = [xml retain];
     rdConnection = [connection retain];
   }
