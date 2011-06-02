@@ -8,8 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		9C269B4C1397EC08008DB0A5 /* RDLogging.h in Headers */ = {isa = PBXBuildFile; fileRef = 9C269B4B1397EC08008DB0A5 /* RDLogging.h */; };
-		9C5A489E1398283D0051E79C /* RDLinkedInEngineDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 9C5A489D1398283D0051E79C /* RDLinkedInEngineDelegate.h */; };
-		9C5A48A013982A230051E79C /* RDLinkedInAuthorizationControllerDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 9C5A489F13982A230051E79C /* RDLinkedInAuthorizationControllerDelegate.h */; };
+		9C5A489E1398283D0051E79C /* RDLinkedInEngineDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 9C5A489D1398283D0051E79C /* RDLinkedInEngineDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9C5A48A013982A230051E79C /* RDLinkedInAuthorizationControllerDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 9C5A489F13982A230051E79C /* RDLinkedInAuthorizationControllerDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9C5A48A313982BFF0051E79C /* OAToken+storage.h in Headers */ = {isa = PBXBuildFile; fileRef = 9C5A48A113982BFF0051E79C /* OAToken+storage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9C5A48A413982BFF0051E79C /* OAToken+storage.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C5A48A213982BFF0051E79C /* OAToken+storage.m */; };
+		9C5A48A613982F500051E79C /* RDLinkedIn.h in Headers */ = {isa = PBXBuildFile; fileRef = 9C5A48A513982F500051E79C /* RDLinkedIn.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9CA007CA1163B53A00C23370 /* RDLinkedInAuthorizationController.h in Headers */ = {isa = PBXBuildFile; fileRef = 9CA007C01163B53A00C23370 /* RDLinkedInAuthorizationController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9CA007CB1163B53A00C23370 /* RDLinkedInAuthorizationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CA007C11163B53A00C23370 /* RDLinkedInAuthorizationController.m */; };
 		9CA007CC1163B53A00C23370 /* RDLinkedInEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = 9CA007C21163B53A00C23370 /* RDLinkedInEngine.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -31,6 +34,9 @@
 		9C269B4B1397EC08008DB0A5 /* RDLogging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDLogging.h; sourceTree = "<group>"; };
 		9C5A489D1398283D0051E79C /* RDLinkedInEngineDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDLinkedInEngineDelegate.h; sourceTree = "<group>"; };
 		9C5A489F13982A230051E79C /* RDLinkedInAuthorizationControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDLinkedInAuthorizationControllerDelegate.h; sourceTree = "<group>"; };
+		9C5A48A113982BFF0051E79C /* OAToken+storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OAToken+storage.h"; sourceTree = "<group>"; };
+		9C5A48A213982BFF0051E79C /* OAToken+storage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "OAToken+storage.m"; sourceTree = "<group>"; };
+		9C5A48A513982F500051E79C /* RDLinkedIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDLinkedIn.h; sourceTree = "<group>"; };
 		9CA007C01163B53A00C23370 /* RDLinkedInAuthorizationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDLinkedInAuthorizationController.h; sourceTree = "<group>"; };
 		9CA007C11163B53A00C23370 /* RDLinkedInAuthorizationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDLinkedInAuthorizationController.m; sourceTree = "<group>"; };
 		9CA007C21163B53A00C23370 /* RDLinkedInEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDLinkedInEngine.h; sourceTree = "<group>"; };
@@ -95,6 +101,7 @@
 		08FB77AEFE84172EC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				9C5A48A513982F500051E79C /* RDLinkedIn.h */,
 				9CA40BA2139806D300C8A2C3 /* RDLinkedInTypes.h */,
 				9C5A489F13982A230051E79C /* RDLinkedInAuthorizationControllerDelegate.h */,
 				9CA007C01163B53A00C23370 /* RDLinkedInAuthorizationController.h */,
@@ -108,6 +115,8 @@
 				9CA007C71163B53A00C23370 /* RDLinkedInRequestBuilder.m */,
 				9CA007C81163B53A00C23370 /* RDLinkedInResponseParser.h */,
 				9CA007C91163B53A00C23370 /* RDLinkedInResponseParser.m */,
+				9C5A48A113982BFF0051E79C /* OAToken+storage.h */,
+				9C5A48A213982BFF0051E79C /* OAToken+storage.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -128,16 +137,18 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9CA007CC1163B53A00C23370 /* RDLinkedInEngine.h in Headers */,
-				9CA007CA1163B53A00C23370 /* RDLinkedInAuthorizationController.h in Headers */,
+				9C5A48A613982F500051E79C /* RDLinkedIn.h in Headers */,
 				9CA40BA3139806D300C8A2C3 /* RDLinkedInTypes.h in Headers */,
+				9C5A489E1398283D0051E79C /* RDLinkedInEngineDelegate.h in Headers */,
+				9CA007CC1163B53A00C23370 /* RDLinkedInEngine.h in Headers */,
+				9C5A48A013982A230051E79C /* RDLinkedInAuthorizationControllerDelegate.h in Headers */,
+				9CA007CA1163B53A00C23370 /* RDLinkedInAuthorizationController.h in Headers */,
+				9C5A48A313982BFF0051E79C /* OAToken+storage.h in Headers */,
 				AA747D9F0F9514B9006C5449 /* LinkedInClientLibrary_Prefix.pch in Headers */,
 				9CA007CE1163B53A00C23370 /* RDLinkedInHTTPURLConnection.h in Headers */,
 				9CA007D01163B53A00C23370 /* RDLinkedInRequestBuilder.h in Headers */,
 				9CA007D21163B53A00C23370 /* RDLinkedInResponseParser.h in Headers */,
 				9C269B4C1397EC08008DB0A5 /* RDLogging.h in Headers */,
-				9C5A489E1398283D0051E79C /* RDLinkedInEngineDelegate.h in Headers */,
-				9C5A48A013982A230051E79C /* RDLinkedInAuthorizationControllerDelegate.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -196,6 +207,7 @@
 				9CA007CF1163B53A00C23370 /* RDLinkedInHTTPURLConnection.m in Sources */,
 				9CA007D11163B53A00C23370 /* RDLinkedInRequestBuilder.m in Sources */,
 				9CA007D31163B53A00C23370 /* RDLinkedInResponseParser.m in Sources */,
+				9C5A48A413982BFF0051E79C /* OAToken+storage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

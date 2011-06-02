@@ -6,12 +6,9 @@
 //  Copyright Results Direct 2010. All rights reserved.
 //
 
-#import <OAuthConsumer/OAToken.h>
-
 #import "DemoViewController.h"
 
-#import "RDLinkedInEngine.h"
-#import "RDLinkedInAuthorizationController.h"
+#import "RDLinkedIn.h"
 
 
 // !!!: replace these empty values with your actual LinkedIn tokens
@@ -49,6 +46,9 @@ static NSString *const kOAuthConsumerSecret  = @"";
 }
 
 - (IBAction)logOut:(id)sender {
+  if( self.engine.isAuthorized ) {
+    [self.engine requestTokenInvalidation];
+  }
 }
 
 
@@ -104,11 +104,17 @@ static NSString *const kOAuthConsumerSecret  = @"";
 #pragma mark - RDLinkedInEngineDelegate
 
 - (void)linkedInEngineAccessToken:(RDLinkedInEngine *)engine setAccessToken:(OAToken *)token {
-  [token storeInUserDefaultsWithServiceProviderName:@"LinkedIn" prefix:@"Demo"];
+  if( token ) {
+    [token rd_storeInUserDefaultsWithServiceProviderName:@"LinkedIn" prefix:@"Demo"];
+  }
+  else {
+    [OAToken rd_clearUserDefaultsUsingServiceProviderName:@"LinkedIn" prefix:@"Demo"];
+    [self updateUI:@"logged out"];
+  }
 }
 
 - (OAToken *)linkedInEngineAccessToken:(RDLinkedInEngine *)engine {
-  return [[[OAToken alloc] initWithUserDefaultsUsingServiceProviderName:@"LinkedIn" prefix:@"Demo"] autorelease];
+  return [OAToken rd_tokenWithUserDefaultsUsingServiceProviderName:@"LinkedIn" prefix:@"Demo"];
 }
 
 - (void)linkedInEngine:(RDLinkedInEngine *)engine requestSucceeded:(RDLinkedInConnectionID *)identifier withResults:(id)results {
