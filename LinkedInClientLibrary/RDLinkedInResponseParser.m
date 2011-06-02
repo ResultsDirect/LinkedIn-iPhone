@@ -37,11 +37,11 @@ NSString *const RDLinkedInResponseParserURLKey = @"RDLinkedInResponseParserURLKe
 }
 
 - (void)dealloc {
-	[rdXML release];
-	[rdConnection release];
-	[rdResults release];
+  [rdXML release];
+  [rdConnection release];
+  [rdResults release];
   [rdError release];
-	[super dealloc];
+  [super dealloc];
 }
 
 - (NSError *)genericError {
@@ -87,6 +87,7 @@ NSString *const RDLinkedInResponseParserURLKey = @"RDLinkedInResponseParserURLKe
     NSString* key;
     id currentValue = nil;
     id newValue = nil;
+    BOOL forceEndElement = NO;
     
     switch( nodeType ) {
       case XML_READER_TYPE_ELEMENT:
@@ -95,66 +96,69 @@ NSString *const RDLinkedInResponseParserURLKey = @"RDLinkedInResponseParserURLKe
                    [NSMutableString string], @"#text",
                    nil];
         [elementStack addObject:element];
+        if( xmlTextReaderIsEmptyElement(rdReader) == 1 ){
+          forceEndElement = YES;
+        }
         break;
         
       case XML_READER_TYPE_TEXT:
         text = [element objectForKey:@"#text"];
         [text appendString:[NSMutableString stringWithUTF8String:(const char *)xmlTextReaderValue(rdReader)]];
         break;
+    }
+    
+    if( nodeType == XML_READER_TYPE_END_ELEMENT || forceEndElement ) {
+      child = [element retain];
+      [elementStack removeLastObject];
+      //RDLOG(@"popped node %@", child);
+      
+      key = [[child objectForKey:@"#name"] retain];
+      text = [element objectForKey:@"#text"];
+      [child removeObjectForKey:@"#name"];
+      
+      if( [elementStack count] ) {
+        element = [elementStack lastObject];
+        currentValue = [element objectForKey:key];
         
-      case XML_READER_TYPE_END_ELEMENT:
-        child = [element retain];
-        [elementStack removeLastObject];
-        //RDLOG(@"popped node %@", child);
-        
-        key = [[child objectForKey:@"#name"] retain];
-        text = [element objectForKey:@"#text"];
-        [child removeObjectForKey:@"#name"];
-        
-        if( [elementStack count] ) {
-          element = [elementStack lastObject];
-          currentValue = [element objectForKey:key];
-          
-          if( [child count] == 1 ) {
-            // new node has only text, no children
-            newValue = text;
-          }
-          else {
-            newValue = child;
-            if( [text length] == 0 ) [child removeObjectForKey:@"#text"];
-          }
-          
-          if( !currentValue ) {
-            [element setObject:newValue forKey:key];
-          }
-          else if( [currentValue isKindOfClass:[NSMutableArray class]] ) {
-            [currentValue addObject:newValue];
-          }
-          else {
-            currentValue = [NSMutableArray arrayWithObjects:currentValue, newValue, nil];
-            [element setObject:currentValue forKey:key];
-          }
+        if( [child count] == 1 ) {
+          // new node has only text, no children
+          newValue = text;
         }
         else {
-          // if the stack emptied before we got back to the root node, that's an error
-          // a non-null error pointer will cause the parsing loop to abort on the next pass
-          if( depth != 0 ) {
-            rdError = [NSError errorWithDomain:RDLinkedInResponseParserDomain
-                                          code:RDLinkedInResponseParserTagMatchingError
-                                      userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                [NSString stringWithUTF8String:(const char *)name], @"currentElement",
-                                                [NSNumber numberWithInt:depth], @"depth",
-                                                rdConnection.request.URL, RDLinkedInResponseParserURLKey,
-                                                nil]];
-          }
-          else {
-            if( [text length] == 0 ) [child removeObjectForKey:@"#text"];
-            rdResults = [child retain];
-          }
+          newValue = child;
+          if( [text length] == 0 ) [child removeObjectForKey:@"#text"];
         }
-        [child release];
-        [key release];
-        break;
+        
+        if( !currentValue ) {
+          [element setObject:newValue forKey:key];
+        }
+        else if( [currentValue isKindOfClass:[NSMutableArray class]] ) {
+          [currentValue addObject:newValue];
+        }
+        else {
+          currentValue = [NSMutableArray arrayWithObjects:currentValue, newValue, nil];
+          [element setObject:currentValue forKey:key];
+        }
+      }
+      else {
+        // if the stack emptied before we got back to the root node, that's an error
+        // a non-null error pointer will cause the parsing loop to abort on the next pass
+        if( depth != 0 ) {
+          rdError = [NSError errorWithDomain:RDLinkedInResponseParserDomain
+                                        code:RDLinkedInResponseParserTagMatchingError
+                                    userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                              [NSString stringWithUTF8String:(const char *)name], @"currentElement",
+                                              [NSNumber numberWithInt:depth], @"depth",
+                                              rdConnection.request.URL, RDLinkedInResponseParserURLKey,
+                                              nil]];
+        }
+        else {
+          if( [text length] == 0 ) [child removeObjectForKey:@"#text"];
+          rdResults = [child retain];
+        }
+      }
+      [child release];
+      [key release];
     }
   }
   
