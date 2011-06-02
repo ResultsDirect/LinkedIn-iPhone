@@ -55,7 +55,7 @@ static const char * kUTF8String = "UTF-8";
 
 - (NSData *)finish {
   if( xmlTextWriterEndDocument(rdWriter) ) {
-    //NSLog(@"complete request document: %s", xmlBufferContent(rdBuffer));
+    //RDLOG(@"complete request document: %s", xmlBufferContent(rdBuffer));
     return [NSData dataWithBytes:xmlBufferContent(rdBuffer) length:xmlBufferLength(rdBuffer)];
   }
   return nil;

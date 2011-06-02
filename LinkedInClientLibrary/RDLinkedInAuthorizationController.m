@@ -162,7 +162,7 @@
 #pragma mark UIWebViewDelegate
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-  NSAssert2(NO, @"Did not load page %@; error: %@", webView.request, error);
+  RDLOG(@"Failed to load page %@", error);
 }
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {

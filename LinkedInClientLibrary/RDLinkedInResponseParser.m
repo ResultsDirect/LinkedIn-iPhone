@@ -8,6 +8,7 @@
 
 #import "RDLinkedInResponseParser.h"
 #import "RDLinkedInHTTPURLConnection.h"
+#import "RDLogging.h"
 
 NSString *const RDLinkedInResponseParserDomain = @"RDLinkedInResponseParserDomain";
 NSString *const RDLinkedInResponseParserURLKey = @"RDLinkedInResponseParserURLKey";
@@ -59,7 +60,7 @@ NSString *const RDLinkedInResponseParserURLKey = @"RDLinkedInResponseParserURLKe
   if( result == -1 ) {
     xmlErrorPtr err = xmlGetLastError();
     if( err ) {
-      NSLog(@"libxml error level %i: %s", err->level, err->message);
+      RDLOG(@"libxml error level %i: %s", err->level, err->message);
       // TODO: set rdError properly
       rdError = [[self genericError] retain];
     }
@@ -79,7 +80,7 @@ NSString *const RDLinkedInResponseParserURLKey = @"RDLinkedInResponseParserURLKe
     int nodeType = xmlTextReaderNodeType(rdReader);
     int depth = xmlTextReaderDepth(rdReader);
     const xmlChar *name = xmlTextReaderConstName(rdReader);
-    //NSLog(@"read node type %2i at depth %3i: %s", nodeType, depth, name);
+    //RDLOG(@"read node type %2i at depth %3i: %s", nodeType, depth, name);
     
     NSMutableString* text = nil;
     NSMutableDictionary* child = nil;
@@ -104,7 +105,7 @@ NSString *const RDLinkedInResponseParserURLKey = @"RDLinkedInResponseParserURLKe
       case XML_READER_TYPE_END_ELEMENT:
         child = [element retain];
         [elementStack removeLastObject];
-        //NSLog(@"popped node %@", child);
+        //RDLOG(@"popped node %@", child);
         
         key = [[child objectForKey:@"#name"] retain];
         text = [element objectForKey:@"#text"];

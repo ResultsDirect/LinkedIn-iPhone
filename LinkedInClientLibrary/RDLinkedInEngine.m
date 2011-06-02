@@ -9,6 +9,7 @@
 #import "RDLinkedInEngine.h"
 #import "RDLinkedInRequestBuilder.h"
 #import "RDLinkedInResponseParser.h"
+#import "RDLogging.h"
 
 static NSString *const kAPIBaseURL           = @"http://api.linkedin.com";
 static NSString *const kOAuthRequestTokenURL = @"https://api.linkedin.com/uas/oauth/requestToken";
@@ -105,42 +106,42 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 #pragma mark authorization methods
 
 - (BOOL)isAuthorized {
-	if( rdOAuthAccessToken.key && rdOAuthAccessToken.secret ) return YES;
-	
-	// check for cached creds
+  if( rdOAuthAccessToken.key && rdOAuthAccessToken.secret ) return YES;
+  
+  // check for cached creds
   if( [rdDelegate respondsToSelector:@selector(linkedInEngineAccessToken:)] ) {
     [rdOAuthAccessToken release];
     rdOAuthAccessToken = [[rdDelegate linkedInEngineAccessToken:self] retain];
     if( rdOAuthAccessToken.key && rdOAuthAccessToken.secret ) return YES;
   }
-	
+  
   // no valid access token found
-	[rdOAuthAccessToken release];
-	rdOAuthAccessToken = nil;
-	return NO;
+  [rdOAuthAccessToken release];
+  rdOAuthAccessToken = nil;
+  return NO;
 }
 
 - (BOOL)hasRequestToken {
-	return (rdOAuthRequestToken.key && rdOAuthRequestToken.secret);
+  return (rdOAuthRequestToken.key && rdOAuthRequestToken.secret);
 }
 
 - (void)requestRequestToken {
-	[self sendTokenRequestWithURL:[NSURL URLWithString:kOAuthRequestTokenURL]
+  [self sendTokenRequestWithURL:[NSURL URLWithString:kOAuthRequestTokenURL]
                           token:nil
                       onSuccess:@selector(setRequestTokenFromTicket:data:)
                          onFail:@selector(oauthTicketFailed:data:)];
 }
 
 - (void)requestAccessToken {
-	[self sendTokenRequestWithURL:[NSURL URLWithString:kOAuthAccessTokenURL]
+  [self sendTokenRequestWithURL:[NSURL URLWithString:kOAuthAccessTokenURL]
                           token:rdOAuthRequestToken
                       onSuccess:@selector(setAccessTokenFromTicket:data:)
                          onFail:@selector(oauthTicketFailed:data:)];
 }
 
 - (NSURLRequest *)authorizationFormURLRequest {
-	OAMutableURLRequest *request = [[[OAMutableURLRequest alloc] initWithURL:[NSURL URLWithString:kOAuthAuthorizeURL] consumer:nil token:rdOAuthRequestToken realm:nil signatureProvider:nil] autorelease];
-	[request setParameters: [NSArray arrayWithObject: [[[OARequestParameter alloc] initWithName:@"oauth_token" value:rdOAuthRequestToken.key] autorelease]]];	
+  OAMutableURLRequest *request = [[[OAMutableURLRequest alloc] initWithURL:[NSURL URLWithString:kOAuthAuthorizeURL] consumer:nil token:rdOAuthRequestToken realm:nil signatureProvider:nil] autorelease];
+  [request setParameters: [NSArray arrayWithObject: [[[OARequestParameter alloc] initWithName:@"oauth_token" value:rdOAuthRequestToken.key] autorelease]]];	
   return request;
 }
 
@@ -169,9 +170,9 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 
 - (RDLinkedInConnectionID *)sendAPIRequestWithURL:(NSURL *)url HTTPMethod:(NSString *)method body:(NSData *)body {
   if( !self.isAuthorized ) return nil;
-  //NSLog(@"sending API request to %@", url);
+  RDLOG(@"sending API request to %@", url);
   
-	// create and configure the URL request
+  // create and configure the URL request
   OAMutableURLRequest* request = [[[OAMutableURLRequest alloc] initWithURL:url
                                                                   consumer:rdOAuthConsumer 
                                                                      token:rdOAuthAccessToken 
@@ -227,7 +228,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 }
 
 - (void)oauthTicketFailed:(OAServiceTicket *)ticket data:(NSData *)data {
-	//NSLog(@"oauthTicketFailed! %@", ticket);
+  //RDLOG(@"oauthTicketFailed! %@", ticket);
   
   // notification of authentication failure
   [[NSNotificationCenter defaultCenter]
@@ -235,16 +236,16 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 }
 
 - (void)setRequestTokenFromTicket:(OAServiceTicket *)ticket data:(NSData *)data {
-  //NSLog(@"got request token ticket response: %@ (%lu bytes)", ticket, (unsigned long)[data length]);
-	if (!ticket.didSucceed || !data) return;
-	
-	NSString *dataString = [[[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding] autorelease];
-	if (!dataString) return;
-	
-	[rdOAuthRequestToken release];
-	rdOAuthRequestToken = [[OAToken alloc] initWithHTTPResponseBody:dataString];
-  //NSLog(@"  request token set %@", rdOAuthRequestToken.key);
-	
+  //RDLOG(@"got request token ticket response: %@ (%lu bytes)", ticket, (unsigned long)[data length]);
+  if (!ticket.didSucceed || !data) return;
+  
+  NSString *dataString = [[[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding] autorelease];
+  if (!dataString) return;
+  
+  [rdOAuthRequestToken release];
+  rdOAuthRequestToken = [[OAToken alloc] initWithHTTPResponseBody:dataString];
+  //RDLOG(@"  request token set %@", rdOAuthRequestToken.key);
+  
   if( rdOAuthVerifier.length ) rdOAuthRequestToken.pin = rdOAuthVerifier;
   
   // notification of request token
@@ -254,21 +255,21 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 }
 
 - (void)setAccessTokenFromTicket:(OAServiceTicket *)ticket data:(NSData *)data {
-  //NSLog(@"got access token ticket response: %@ (%lu bytes)", ticket, (unsigned long)[data length]);
-	if (!ticket.didSucceed || !data) return;
-	
-	NSString *dataString = [[[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding] autorelease];
-	if (!dataString) return;
+  //RDLOG(@"got access token ticket response: %@ (%lu bytes)", ticket, (unsigned long)[data length]);
+  if (!ticket.didSucceed || !data) return;
   
-	if( rdOAuthVerifier.length && [dataString rangeOfString:@"oauth_verifier"].location == NSNotFound ) {
+  NSString *dataString = [[[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding] autorelease];
+  if (!dataString) return;
+  
+  if( rdOAuthVerifier.length && [dataString rangeOfString:@"oauth_verifier"].location == NSNotFound ) {
     dataString = [dataString stringByAppendingFormat:@"&oauth_verifier=%@", rdOAuthVerifier];
   }
-	
-  [rdOAuthAccessToken release];
-	rdOAuthAccessToken = [[OAToken alloc] initWithHTTPResponseBody:dataString];
-  //NSLog(@"  access token set %@", rdOAuthAccessToken.key);
   
-	if( [rdDelegate respondsToSelector:@selector(linkedInEngineAccessToken:setAccessToken:)] ) {
+  [rdOAuthAccessToken release];
+  rdOAuthAccessToken = [[OAToken alloc] initWithHTTPResponseBody:dataString];
+  //RDLOG(@"  access token set %@", rdOAuthAccessToken.key);
+  
+  if( [rdDelegate respondsToSelector:@selector(linkedInEngineAccessToken:setAccessToken:)] ) {
     [rdDelegate linkedInEngineAccessToken:self setAccessToken:rdOAuthAccessToken];
   }
   
@@ -283,8 +284,8 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 
 
 - (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
-  //NSLog(@"received credential challenge!");
-	[[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
+  //RDLOG(@"received credential challenge!");
+  [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
 }
 
 
@@ -298,7 +299,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
   
   if( kRDLinkedInDebugLevel > 5 ) {
     NSHTTPURLResponse *resp = (NSHTTPURLResponse *)response;
-    NSLog(@"%@ (%d) [%@]:\r%@",
+    RDLOG(@"%@ (%d) [%@]:\r%@",
           connection.request.URL,
           [resp statusCode], 
           [NSHTTPURLResponse localizedStringForStatusCode:[resp statusCode]], 
@@ -329,8 +330,8 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
 
 
 - (void)connection:(RDLinkedInHTTPURLConnection *)connection didFailWithError:(NSError *)error {
-	if( [rdDelegate respondsToSelector:@selector(linkedInEngine:requestFailed:withError:)] ) {
-		[rdDelegate linkedInEngine:self requestFailed:connection.identifier withError:error];
+  if( [rdDelegate respondsToSelector:@selector(linkedInEngine:requestFailed:withError:)] ) {
+    [rdDelegate linkedInEngine:self requestFailed:connection.identifier withError:error];
   }
   
   [self closeConnection:connection];
@@ -342,7 +343,7 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
   if( [receivedData length] ) {
     if( kRDLinkedInDebugLevel > 0 ) {
       NSString *dataString = [NSString stringWithUTF8String:[receivedData bytes]];
-      NSLog(@"Succeeded! Received %d bytes of data:\r\r%@", [receivedData length], dataString);
+      RDLOG(@"Succeeded! Received %d bytes of data:\r\r%@", [receivedData length], dataString);
     }
     
     if( kRDLinkedInDebugLevel > 8 ) {
