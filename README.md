@@ -31,6 +31,8 @@ TODO
   * Merge in more of the community's additions, including the new shares API that replaces the status update API we're using. (In the mean time, look at the other forks of this project.)
   
   * Add more functionality to the demo to showcase these additions.
+  
+  * Investigate [Google's OAuth controllers](http://code.google.com/p/gtm-oauth/), especially given that the OAuth implementation behind that UI is fresher than OAuthConsumer.
 
 
 Credits
