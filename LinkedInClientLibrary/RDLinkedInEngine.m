@@ -329,14 +329,18 @@ const NSUInteger kRDLinkedInMaxStatusLength = 140;
   
   if( statusCode >= 400 ) {
     // error response; just abort now
-    NSError *error = [NSError errorWithDomain:@"HTTP" code:statusCode userInfo:nil];
+    NSError *error = [NSError errorWithDomain:@"HTTP" code:statusCode
+                                     userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                               [resp allHeaderFields], @"headers",
+                                               nil]];
     if( [rdDelegate respondsToSelector:@selector(linkedInEngine:requestFailed:withError:)] ) {
       [rdDelegate linkedInEngine:self requestFailed:connection.identifier withError:error];
     }
     [self closeConnection:connection];
   }
-  else if( statusCode == 204 ) {
-    // no content; so skip the parsing, and declare success!
+  else if( statusCode == 204 || statusCode == 201) {
+    // 204: no content; so skip the parsing, and declare success!
+	// 201: created. declare success!
     if( [rdDelegate respondsToSelector:@selector(linkedInEngine:requestSucceeded:withResults:)] ) {
       [rdDelegate linkedInEngine:self requestSucceeded:connection.identifier withResults:nil];
     }
