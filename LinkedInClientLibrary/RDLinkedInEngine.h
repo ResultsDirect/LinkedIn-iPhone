@@ -68,7 +68,19 @@ extern const NSUInteger kRDLinkedInMaxStatusLength;
 
 - (RDLinkedInConnectionID *)profileForCurrentUser;
 - (RDLinkedInConnectionID *)profileForPersonWithID:(NSString *)memberID;
+- (RDLinkedInConnectionID *)peopleSearch:(NSString *)query;
 
 - (RDLinkedInConnectionID *)updateStatus:(NSString *)newStatus;
+/**
+ * \fn - (RDLinkedInConnectionID *)shareUrl:(NSString *)submittedUrl imageUrl:(NSString *)submittedImageUrl title:(NSString*)title comment:(NSString*)comment
+ * \brief	This method is able to share a content.
+ * \param	NSString* submittedUrl		The URL's content
+ * \param	NSString* submittedImageUrl	An image that illustrates the content
+ * \param	NSString* title				A title that will be shown instead of the URL
+ * \param	NSString* comment			A comment which will be like a user status
+ * \return	RDLinkedInConnectionID*
+ * \see http://developer.linkedin.com/docs/DOC-1212
+ */
+- (RDLinkedInConnectionID *)shareUrl:(NSString *)submittedUrl imageUrl:(NSString *)submittedImageUrl title:(NSString*)title comment:(NSString*)comment;
 
 @end
